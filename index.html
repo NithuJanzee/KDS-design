@@ -187,8 +187,10 @@ button{font-family:var(--font);cursor:pointer}
 .cta-btn{flex:1;padding:10px 8px;border-radius:var(--r-sm);font-size:13px;font-weight:600;border:none;letter-spacing:.2px;transition:all .15s;min-height:44px}
 .cta-accept{background:var(--amber);color:#fff}
 .cta-accept:hover{background:#b45309}
-.cta-ready{background:var(--blue);color:#fff}
+.cta-ready{background:var(--blue);color:#fff;transition:background .3s,box-shadow .3s}
 .cta-ready:hover{background:#1d4ed8}
+.cta-ready.all-done{background:var(--green);box-shadow:0 0 0 3px rgba(22,163,74,.25);animation:glow-green 1s ease-in-out infinite}
+.cta-ready.all-done:hover{background:#15803d}
 .cta-served{background:var(--green);color:#fff}
 .cta-served:hover{background:#15803d}
 .cta-done{background:var(--bg4);color:var(--text3);cursor:default}
@@ -321,7 +323,7 @@ button{font-family:var(--font);cursor:pointer}
 
 /* ── Keyframes ── */
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes cardEnter{0%{opacity:0;transform:translateY(-24px) scale(.94)}60%{transform:translateY(4px) scale(1.01)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes cardEnter{0%{opacity:0;transform:translateY(-12px) scale(.97)}100%{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes cardExit{0%{opacity:1;transform:translateX(0) scale(1)}30%{transform:translateX(8px) scale(1.02)}100%{opacity:0;transform:translateX(60px) scale(.9)}}
 @keyframes cardRecall{0%{opacity:1;transform:translateX(0) scale(1)}30%{transform:translateX(-8px) scale(1.02)}100%{opacity:0;transform:translateX(-60px) scale(.9)}}
 @keyframes cardAccepted{0%{transform:scale(1)}20%{transform:scale(1.03)}40%{transform:scale(.98)}60%{transform:scale(1.01)}100%{transform:scale(1)}}
@@ -353,7 +355,7 @@ button{font-family:var(--font);cursor:pointer}
 @keyframes splashRing{0%{transform:scale(.5);opacity:.8}100%{transform:scale(2.5);opacity:0}}
 
 /* ── Applied animation classes ── */
-.anim-card-enter{animation:cardEnter .45s cubic-bezier(.34,1.4,.64,1) both}
+.anim-card-enter{animation:cardEnter .3s cubic-bezier(.25,.46,.45,.94) both}
 .anim-card-exit{animation:cardExit .35s ease-in forwards;pointer-events:none}
 .anim-card-recall{animation:cardRecall .35s ease-in forwards;pointer-events:none}
 .anim-card-accepted{animation:cardAccepted .5s cubic-bezier(.36,.07,.19,.97) both}
@@ -653,25 +655,65 @@ function clickItem(oid,idx){
   if(wasNew){o.status='prep';}
   o.items[idx].done=!o.items[idx].done;
   const cardEl=document.getElementById('card-'+oid);
+
+  // Animate the clicked row
   if(cardEl){
     const rows=cardEl.querySelectorAll('.item-row');
     if(rows[idx]){
       const cl=o.items[idx].done?'anim-check':'anim-uncheck';
       rows[idx].classList.remove(cl);void rows[idx].offsetWidth;rows[idx].classList.add(cl);
       setTimeout(()=>rows[idx]&&rows[idx].classList.remove(cl),400);
+      if(o.items[idx].done) rows[idx].classList.add('done');
+      else rows[idx].classList.remove('done');
     }
     if(wasNew){cardEl.classList.add('anim-card-accepted');flashLane('prep','blue');}
   }
-  if(o.items.every(i=>i.done)){
-    setTimeout(()=>{
-      const el=document.getElementById('card-'+oid);
-      if(el){el.classList.add('anim-card-ready');}
-      flashLane('ready','green');
-      setTimeout(()=>{o.status='ready';render();notify(`#${o.id} — all items ready!`,'green');popCount('cntReady');popCount('pillReady');popCount('readyBadge');},300);
-    },200);
+
+  if(wasNew){
+    // Lane change: need full render to move card to prep lane
+    setTimeout(()=>render(),350);
     return;
   }
-  setTimeout(()=>render(),wasNew?350:180);
+
+  // Stay in prep — surgical DOM updates only (no full render = no flash)
+  const allDone=o.items.every(i=>i.done);
+
+  if(allDone){
+    // Move order to top of prep list
+    const prepOrders=orders.filter(x=>x.status==='prep');
+    if(prepOrders[0]!==o){
+      orders.splice(orders.indexOf(o),1);
+      orders.splice(orders.indexOf(prepOrders[0]),0,o);
+    }
+    if(cardEl){
+      // Move card DOM to top of prep lane
+      const lanePrep=document.getElementById('lanePrep');
+      if(lanePrep) lanePrep.insertBefore(cardEl,lanePrep.firstChild);
+      // Green button
+      const btn=cardEl.querySelector('.cta-ready');
+      if(btn){btn.classList.add('all-done');btn.textContent='✓ Mark Ready';}
+      // Update hint
+      const hint=cardEl.querySelector('.item-hint');
+      if(hint) hint.textContent='✓ All done — tap Mark Ready!';
+      // Update progress bar
+      const fill=cardEl.querySelector('.progress-fill');
+      if(fill){fill.style.width='100%';fill.style.background='var(--green)';}
+    }
+  } else {
+    // Not all done — update progress bar and revert button if needed
+    if(cardEl){
+      const pct=progressPct(o);
+      const fill=cardEl.querySelector('.progress-fill');
+      if(fill){fill.style.width=pct+'%';fill.style.background=progressColor(pct);}
+      const btn=cardEl.querySelector('.cta-ready');
+      if(btn&&btn.classList.contains('all-done')){
+        btn.classList.remove('all-done');
+        btn.textContent='Mark All Ready';
+      }
+      const hint=cardEl.querySelector('.item-hint');
+      if(hint) hint.textContent='Tap item when done';
+    }
+  }
 }
 
 /* ── Accept / CTA ── */
@@ -811,9 +853,11 @@ function cardHtml(o){
   }).join('');
 
   // hint text
+  const allItemsDone=isPrep&&o.items.every(i=>i.done);
+
   let hintHtml='';
   if(isNew) hintHtml=`<div class="item-hint">Tap item to start prep · or Accept all</div>`;
-  else if(isPrep) hintHtml=`<div class="item-hint">Tap item when done — all done = Ready</div>`;
+  else if(isPrep) hintHtml=`<div class="item-hint">${allItemsDone?'✓ All done — tap Mark Ready!':'Tap item when done'}</div>`;
   else if(isReady) hintHtml=`<div class="recall-hint">Tap any item to recall it back to preparing</div>`;
 
   // CTA
@@ -824,7 +868,7 @@ function cardHtml(o){
     </div>`;
   } else if(isPrep){
     ctaHtml=`<div class="cta-area">
-      <button class="cta-btn cta-ready" onclick="markReady('${o.id}',event)">Mark All Ready</button>
+      <button class="cta-btn cta-ready${allItemsDone?' all-done':''}" onclick="markReady('${o.id}',event)">${allItemsDone?'✓ Mark Ready':'Mark All Ready'}</button>
     </div>`;
   } else if(isReady){
     ctaHtml=`<div class="cta-area">
@@ -839,7 +883,7 @@ function cardHtml(o){
     <button class="sort-arrow" onclick="moveInLane('${o.id}',1)" title="Move down">↓</button>
   </div>`;
 
-  return`<div class="ocard anim-card-enter ${urgCls(m)}" id="card-${o.id}" draggable="true"
+  return`<div class="ocard ${urgCls(m)}" id="card-${o.id}" draggable="true"
     ondragstart="onDragStart(event,'${o.id}')" ondragend="onDragEnd(event,'${o.id}')">
     <div class="drag-handle" title="Drag to another lane">
       <svg viewBox="0 0 14 14"><circle cx="5" cy="3.5" r="1" fill="currentColor" stroke="none"/><circle cx="9" cy="3.5" r="1" fill="currentColor" stroke="none"/><circle cx="5" cy="7" r="1" fill="currentColor" stroke="none"/><circle cx="9" cy="7" r="1" fill="currentColor" stroke="none"/><circle cx="5" cy="10.5" r="1" fill="currentColor" stroke="none"/><circle cx="9" cy="10.5" r="1" fill="currentColor" stroke="none"/></svg>
@@ -927,7 +971,6 @@ function clickSummaryItem(itemName,e){
     if(!it)return;
     it.done=true;affected++;
     if(o.status==='new'){o.status='prep';}
-    if(o.items.every(i=>i.done)){o.status='ready';}
   });
   if(affected>0){
     if(e){
@@ -957,6 +1000,12 @@ function bulkData(){
 
 /* ── Render ── */
 function render(){
+  // Track which lane each card is in — so cards that change lanes get the enter animation
+  const _prevSlots=new Set();
+  ['laneNew','lanePrep','laneReady'].forEach(lid=>{
+    document.querySelectorAll('#'+lid+' .ocard').forEach(el=>_prevSlots.add(lid+':'+el.id));
+  });
+
   const by=s=>orders.filter(o=>o.status===s);
   const nw=by('new'),pr=by('prep'),rd=by('ready');
 
@@ -967,6 +1016,15 @@ function render(){
     '<div class="lane-drop-hint">Drop here</div>';
   document.getElementById('laneReady').innerHTML=(rd.length?rd.map(cardHtml).join(''):'<div class="lane-empty">Nothing ready</div>')+
     '<div class="lane-drop-hint">Drop here</div>';
+
+  // animate only cards that are new or changed lanes
+  requestAnimationFrame(()=>{
+    ['laneNew','lanePrep','laneReady'].forEach(lid=>{
+      document.querySelectorAll('#'+lid+' .ocard').forEach(el=>{
+        if(!_prevSlots.has(lid+':'+el.id)) el.classList.add('anim-card-enter');
+      });
+    });
+  });
 
   // counts
   document.getElementById('cntNew').textContent=nw.length;
