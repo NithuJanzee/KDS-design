@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KDS — Kitchen Display System</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f5f4f2; --bg2:#ffffff; --bg3:#faf9f7; --bg4:#eeece8;
+  --border:rgba(0,0,0,0.08); --border2:rgba(0,0,0,0.13);
+  --text:#1a1916; --text2:#6b6760; --text3:#aeaaa4;
+  --shadow:0 1px 3px rgba(0,0,0,0.07),0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md:0 4px 14px rgba(0,0,0,0.09),0 2px 4px rgba(0,0,0,0.05);
+  --shadow-lg:0 8px 24px rgba(0,0,0,0.12),0 3px 8px rgba(0,0,0,0.07);
+  --amber:#d97706; --amber-bg:#fffbeb; --amber-bdr:#fcd34d;
+  --blue:#2563eb; --blue-bg:#eff6ff; --blue-bdr:#bfdbfe;
+  --green:#16a34a; --green-bg:#f0fdf4; --green-bdr:#bbf7d0;
+  --red:#dc2626; --red-bg:#fef2f2; --red-bdr:#fecaca;
+  --purple:#7c3aed; --purple-bg:#f5f3ff; --purple-bdr:#ddd6fe;
+  --r:10px; --r-sm:7px; --r-lg:14px;
+  --nav-h:66px; --top-h:58px;
+  --font:'Inter',sans-serif; --mono:'JetBrains Mono',monospace;
+}
+[data-theme="dark"] {
+  --bg:#111110; --bg2:#1a1916; --bg3:#1f1e1c; --bg4:#252422;
+  --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.13);
+  --text:#f2ede8; --text2:#8a857e; --text3:#4a4742;
+  --shadow:0 1px 3px rgba(0,0,0,0.5),0 1px 2px rgba(0,0,0,0.4);
+  --shadow-md:0 4px 14px rgba(0,0,0,0.5),0 2px 4px rgba(0,0,0,0.4);
+  --shadow-lg:0 8px 24px rgba(0,0,0,0.6),0 3px 8px rgba(0,0,0,0.4);
+  --amber:#f59e0b; --amber-bg:rgba(245,158,11,0.1); --amber-bdr:rgba(245,158,11,0.28);
+  --blue:#60a5fa; --blue-bg:rgba(96,165,250,0.1); --blue-bdr:rgba(96,165,250,0.28);
+  --green:#4ade80; --green-bg:rgba(74,222,128,0.1); --green-bdr:rgba(74,222,128,0.28);
+  --red:#f87171; --red-bg:rgba(248,113,113,0.1); --red-bdr:rgba(248,113,113,0.28);
+  --purple:#a78bfa; --purple-bg:rgba(167,139,250,0.1); --purple-bdr:rgba(167,139,250,0.28);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;user-select:none}
+button{font-family:var(--font);cursor:pointer}
+
+.app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* ── Topbar ── */
+.topbar{height:var(--top-h);background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 18px;gap:14px;flex-shrink:0;box-shadow:var(--shadow)}
+.logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.logo-icon{width:32px;height:32px;background:var(--amber);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.logo-icon svg{width:17px;height:17px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round}
+.brand{font-size:15px;font-weight:700;letter-spacing:-.3px}
+.sub{font-size:10px;color:var(--text3);font-family:var(--mono);letter-spacing:.5px;text-transform:uppercase}
+.top-pills{display:flex;gap:5px}
+.pill{padding:4px 11px;border-radius:20px;font-size:11px;font-weight:600;font-family:var(--mono);letter-spacing:.2px;border:1px solid transparent}
+.p-new{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-bdr)}
+.p-prep{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-bdr)}
+.p-ready{background:var(--green-bg);color:var(--green);border-color:var(--green-bdr)}
+.spacer{flex:1}
+.top-right{display:flex;align-items:center;gap:8px}
+.live-chip{display:flex;align-items:center;gap:5px;padding:4px 11px;border-radius:20px;border:1px solid var(--green-bdr);background:var(--green-bg);font-size:10px;font-weight:600;font-family:var(--mono);color:var(--green)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.avg-chip{padding:4px 11px;border-radius:20px;border:1px solid var(--border2);background:var(--bg3);font-size:11px;font-family:var(--mono);color:var(--text2)}
+.avg-chip b{color:var(--amber);font-weight:600}
+.icon-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border2);background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text2);transition:all .15s}
+.icon-btn:hover{background:var(--bg4);color:var(--text)}
+.btn{padding:9px 16px;border-radius:var(--r-sm);border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-size:13px;font-weight:500;transition:all .15s;white-space:nowrap;min-height:38px}
+.btn:hover{background:var(--bg4)}
+.btn-accent{background:var(--amber);color:#fff;border-color:var(--amber);font-weight:600}
+.btn-accent:hover{background:#b45309;border-color:#b45309}
+
+/* ── Content & Views ── */
+.content{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.view{display:none;flex:1;overflow:hidden;flex-direction:column}
+.view.active{display:flex}
+
+/* ── Bottom Nav ── */
+.bottom-nav{height:var(--nav-h);background:var(--bg2);border-top:1px solid var(--border);display:flex;flex-shrink:0;box-shadow:0 -2px 10px rgba(0,0,0,0.05)}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--text3);font-size:10px;font-weight:500;letter-spacing:.4px;text-transform:uppercase;border:none;background:transparent;transition:all .15s;position:relative;padding:0;min-height:var(--nav-h)}
+.nav-btn:hover{color:var(--text2);background:var(--bg3)}
+.nav-btn.active{color:var(--amber)}
+.nav-btn.active::before{content:'';position:absolute;top:0;left:22%;right:22%;height:2px;background:var(--amber);border-radius:0 0 3px 3px}
+.nav-svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.nav-badge{position:absolute;top:8px;right:calc(50% - 18px);background:var(--red);color:#fff;font-size:9px;font-weight:700;min-width:17px;height:17px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);padding:0 3px;border:2px solid var(--bg2)}
+
+/* ── Board ── */
+.board{display:flex;flex:1;overflow:hidden}
+.lane{display:flex;flex-direction:column;flex:1;border-right:1px solid var(--border);min-width:0;transition:background .2s}
+.lane:last-of-type{border-right:none}
+.lane.drag-over{background:rgba(37,99,235,0.04)}
+.lane.drag-over .lane-drop-hint{opacity:1}
+.lane-hdr{padding:11px 13px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0}
+.lane-lbl{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text2)}
+.lane-hdr-right{display:flex;align-items:center;gap:6px}
+.lane-cnt{min-width:20px;height:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:var(--mono);padding:0 5px}
+.cnt-new{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-bdr)}
+.cnt-prep{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-bdr)}
+.cnt-ready{background:var(--green-bg);color:var(--green);border:1px solid var(--green-bdr)}
+.lane-scroll{flex:1;overflow-y:auto;padding:9px;display:flex;flex-direction:column;gap:8px;position:relative}
+.lane-scroll::-webkit-scrollbar{width:4px}
+.lane-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.lane-empty{text-align:center;color:var(--text3);font-size:11px;font-family:var(--mono);margin-top:22px;pointer-events:none}
+.lane-drop-hint{position:absolute;inset:8px;border:2px dashed var(--blue-bdr);border-radius:var(--r);background:var(--blue-bg);opacity:0;pointer-events:none;transition:opacity .2s;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--blue);font-weight:600}
+
+/* ── Summary ── */
+.sum-col{width:200px;flex-shrink:0;border-left:1px solid var(--border);background:var(--bg2);display:flex;flex-direction:column}
+.sum-hdr{padding:11px 13px;border-bottom:1px solid var(--border);flex-shrink:0}
+.sum-hdr h3{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text2)}
+.sum-hdr p{font-size:10px;color:var(--text3);margin-top:1px;font-family:var(--mono)}
+.sum-body{flex:1;overflow-y:auto;padding:8px}
+.sum-body::-webkit-scrollbar{width:3px}
+.sum-body::-webkit-scrollbar-thumb{background:var(--border2)}
+.s-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);padding:9px 11px;margin-bottom:6px}
+.s-row{display:flex;justify-content:space-between;align-items:center}
+.s-name{font-size:12px;font-weight:600}
+.s-qty{font-size:20px;font-weight:700;font-family:var(--mono);color:var(--blue)}
+.s-breakdown{font-size:10px;color:var(--text3);margin-top:3px;font-family:var(--mono)}
+
+/* ── Order Card ── */
+.ocard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:12px 13px;display:flex;flex-direction:column;gap:9px;box-shadow:var(--shadow);transition:box-shadow .15s,transform .1s,border-color .15s;position:relative}
+.ocard:hover{box-shadow:var(--shadow-md)}
+.ocard.urgent{border-left:3px solid var(--red)}
+.ocard.warn{border-left:3px solid var(--amber)}
+.ocard.dragging{opacity:.4;transform:scale(.98)}
+.ocard.drag-ghost{box-shadow:var(--shadow-lg);transform:rotate(1.5deg) scale(1.02);opacity:1}
+
+/* drag handle */
+.drag-handle{position:absolute;top:10px;right:12px;cursor:grab;color:var(--text3);display:flex;flex-direction:column;gap:3px;padding:3px;border-radius:4px;transition:color .15s}
+.drag-handle:hover{color:var(--text2)}
+.drag-handle svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8}
+.drag-handle:active{cursor:grabbing}
+
+/* sort arrows */
+.sort-arrows{display:flex;flex-direction:column;gap:1px}
+.sort-arrow{width:22px;height:22px;border-radius:5px;border:1px solid var(--border2);background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text2);transition:all .15s}
+.sort-arrow:hover{background:var(--bg4);color:var(--text)}
+
+.card-hd{display:flex;align-items:flex-start;gap:6px;padding-right:26px}
+.card-id{font-size:13px;font-weight:700;font-family:var(--mono)}
+.card-meta{font-size:10px;color:var(--text2);margin-top:2px;font-family:var(--mono)}
+.card-rt{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;margin-left:auto}
+.t-badge{font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;font-family:var(--mono);border:1px solid transparent}
+.t-ok{background:var(--green-bg);color:var(--green);border-color:var(--green-bdr)}
+.t-warn{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-bdr)}
+.t-hot{background:var(--red-bg);color:var(--red);border-color:var(--red-bdr)}
+.type-tag{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.4px;text-transform:uppercase}
+.tt-dine{background:var(--purple-bg);color:var(--purple)}
+.tt-take{background:var(--amber-bg);color:var(--amber)}
+.tt-del{background:var(--blue-bg);color:var(--blue)}
+
+/* Item rows — clickable */
+.card-items{border-top:1px solid var(--border);padding:6px 0;display:flex;flex-direction:column;gap:2px}
+.item-row{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;cursor:pointer;transition:background .12s;border:1px solid transparent}
+.item-row:hover{background:var(--bg3);border-color:var(--border)}
+.item-row.done{background:var(--green-bg);border-color:var(--green-bdr)}
+.item-row.done .item-n{text-decoration:line-through;color:var(--text3)}
+.item-row.done .item-q{color:var(--green)}
+.item-q{font-family:var(--mono);font-weight:700;color:var(--amber);font-size:11px;min-width:24px;flex-shrink:0}
+.item-n{color:var(--text);flex:1;font-size:12px;font-weight:500}
+.item-check{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.item-row.done .item-check{background:var(--green);border-color:var(--green)}
+.item-row.done .item-check::after{content:'';width:5px;height:8px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translate(-1px,-1px)}
+
+/* Item hint */
+.item-hint{font-size:10px;color:var(--text3);text-align:center;padding:3px 0;font-family:var(--mono);font-style:italic}
+
+.card-divider{border:none;border-top:1px solid var(--border);margin:0}
+
+/* CTA buttons — bigger touch target */
+.cta-area{display:flex;gap:6px}
+.cta-btn{flex:1;padding:10px 8px;border-radius:var(--r-sm);font-size:13px;font-weight:600;border:none;letter-spacing:.2px;transition:all .15s;min-height:44px}
+.cta-accept{background:var(--amber);color:#fff}
+.cta-accept:hover{background:#b45309}
+.cta-ready{background:var(--blue);color:#fff}
+.cta-ready:hover{background:#1d4ed8}
+.cta-served{background:var(--green);color:#fff}
+.cta-served:hover{background:#15803d}
+.cta-done{background:var(--bg4);color:var(--text3);cursor:default}
+.cta-up{background:var(--bg3);color:var(--text2);border:1px solid var(--border2);flex:0 0 44px;padding:0}
+.cta-up:hover{background:var(--bg4)}
+
+/* Progress bar */
+.progress-bar{height:3px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:-4px}
+.progress-fill{height:100%;border-radius:3px;transition:width .3s,background .3s}
+
+/* ── Sec bar ── */
+.sec-bar{padding:11px 15px;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--shadow)}
+.sec-bar h2{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text2)}
+.scroll-area{flex:1;overflow-y:auto;padding:13px}
+.scroll-area::-webkit-scrollbar{width:5px}
+.scroll-area::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* ── Bulk View ── */
+.bulk-layout{display:flex;flex:1;overflow:hidden;gap:0}
+.bulk-main{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.bulk-sidebar{width:220px;flex-shrink:0;border-left:1px solid var(--border);background:var(--bg2);display:flex;flex-direction:column}
+.bulk-sidebar-hdr{padding:11px 13px;border-bottom:1px solid var(--border);flex-shrink:0}
+.bulk-sidebar-hdr h3{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text2)}
+.bulk-sidebar-body{flex:1;overflow-y:auto;padding:10px}
+.bulk-stat-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;margin-bottom:7px}
+.bsc-label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;font-family:var(--mono)}
+.bsc-val{font-size:22px;font-weight:700;font-family:var(--mono);color:var(--blue);margin-top:2px}
+.bsc-sub{font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:1px}
+.bulk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px}
+.bc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;box-shadow:var(--shadow);transition:box-shadow .15s;display:flex;flex-direction:column;gap:8px}
+.bc:hover{box-shadow:var(--shadow-md)}
+.bc-top{display:flex;justify-content:space-between;align-items:flex-start}
+.bc-name{font-size:14px;font-weight:700}
+.bc-qty{font-size:36px;font-weight:700;font-family:var(--mono);color:var(--blue);line-height:1}
+.bc-cat{font-size:10px;color:var(--text3);text-transform:uppercase;font-family:var(--mono);letter-spacing:.4px}
+.bc-prog{height:4px;background:var(--border);border-radius:4px;overflow:hidden;margin:2px 0}
+.bc-prog-fill{height:100%;border-radius:4px;background:var(--blue)}
+.bc-div{border:none;border-top:1px solid var(--border)}
+.bc-bills{display:flex;flex-direction:column;gap:3px}
+.bc-row{display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:2px 4px;border-radius:4px}
+.bc-row:hover{background:var(--bg3)}
+.bc-bill-id{color:var(--text2);font-family:var(--mono)}
+.bc-bill-qty{font-family:var(--mono);font-weight:600;color:var(--amber)}
+.bc-bill-type{font-size:9px;padding:1px 5px;border-radius:3px;margin-left:4px}
+.bc-total-row{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:600;color:var(--text2);padding-top:4px;border-top:1px solid var(--border);margin-top:2px}
+
+/* ── Ready Queue ── */
+.ready-banner{padding:11px 15px;background:var(--green-bg);border-bottom:1px solid var(--green-bdr);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.ready-banner span{font-size:12px;font-weight:600;color:var(--green)}
+.ready-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:9px}
+.rc{background:var(--bg2);border:1px solid var(--green-bdr);border-radius:var(--r);padding:13px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow)}
+.rc-hd{display:flex;justify-content:space-between;align-items:baseline}
+.rc-id{font-size:14px;font-weight:700;font-family:var(--mono)}
+.rc-sub{font-size:10px;color:var(--text2);font-family:var(--mono)}
+.rc-items-list{display:flex;flex-direction:column;gap:3px}
+.rc-item{display:flex;align-items:center;gap:7px;font-size:12px;padding:3px 6px;border-radius:5px;background:var(--green-bg)}
+.rc-item-q{font-family:var(--mono);font-weight:700;color:var(--green);font-size:11px}
+.rc-item-n{color:var(--text);text-decoration:line-through;color:var(--text2)}
+.rc-elapsed{font-size:10px;font-family:var(--mono);padding:2px 7px;border-radius:20px;border:1px solid var(--border2);color:var(--text2)}
+.rc-btn{width:100%;padding:10px;border:none;border-radius:var(--r-sm);background:var(--green);color:#fff;font-weight:600;font-size:13px;transition:background .15s;min-height:44px}
+.rc-btn:hover{background:#15803d}
+
+/* ── Stock ── */
+.st-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(192px,1fr));gap:8px}
+.si{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:13px;box-shadow:var(--shadow);transition:border-color .15s}
+.si.oos{border-color:var(--red-bdr);background:var(--red-bg)}
+.si-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px}
+.si-name{font-size:13px;font-weight:600}
+.si-cat{font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.4px;margin-top:1px}
+.si-tag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;font-family:var(--mono);border:1px solid transparent}
+.si-avail{background:var(--green-bg);color:var(--green);border-color:var(--green-bdr)}
+.si-oos-t{background:var(--red-bg);color:var(--red);border-color:var(--red-bdr)}
+.si-bot{display:flex;align-items:center;justify-content:space-between}
+.si-lbl{font-size:11px;color:var(--text2)}
+.tog{width:44px;height:24px;border-radius:24px;cursor:pointer;position:relative;border:1px solid transparent;transition:all .2s;flex-shrink:0}
+.tog.on{background:var(--green-bg);border-color:var(--green-bdr)}
+.tog.off{background:var(--red-bg);border-color:var(--red-bdr)}
+.tog-k{width:18px;height:18px;border-radius:50%;position:absolute;top:2px;transition:left .2s}
+.tog.on .tog-k{left:22px;background:var(--green)}
+.tog.off .tog-k{left:2px;background:var(--red)}
+
+/* ── More ── */
+.more-wrap{display:flex;flex-direction:column;gap:13px;padding:14px;overflow-y:auto;flex:1}
+.more-wrap::-webkit-scrollbar{width:5px}
+.more-wrap::-webkit-scrollbar-thumb{background:var(--border2)}
+.cg{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow)}
+.cg-hdr{padding:10px 15px;border-bottom:1px solid var(--border);background:var(--bg3)}
+.cg-hdr h3{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text2)}
+.cg-row{display:flex;align-items:center;justify-content:space-between;padding:13px 15px;border-bottom:1px solid var(--border)}
+.cg-row:last-child{border-bottom:none}
+.cg-lbl{font-size:13px;font-weight:500}
+.cg-desc{font-size:11px;color:var(--text2);margin-top:1px}
+.cg-val{font-size:12px;font-family:var(--mono);color:var(--amber);font-weight:600}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)}
+.stat-box{background:var(--bg2);padding:15px 0;text-align:center}
+.stat-n{font-size:26px;font-weight:700;font-family:var(--mono);color:var(--blue)}
+.stat-l{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-top:3px}
+.stog{width:44px;height:24px;border-radius:24px;cursor:pointer;position:relative;transition:all .2s;border:1px solid transparent;flex-shrink:0}
+.stog.on{background:var(--green-bg);border-color:var(--green-bdr)}
+.stog.off{background:var(--bg4);border-color:var(--border2)}
+.stog-k{width:18px;height:18px;border-radius:50%;position:absolute;top:2px;transition:left .2s}
+.stog.on .stog-k{left:22px;background:var(--green)}
+.stog.off .stog-k{left:2px;background:var(--text3)}
+
+/* ── Notif ── */
+.notif-stack{position:fixed;bottom:74px;right:13px;display:flex;flex-direction:column;gap:5px;z-index:999;pointer-events:none;align-items:flex-end}
+.notif{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);padding:10px 14px;font-size:12px;box-shadow:var(--shadow-md);animation:fadeUp .25s ease;display:flex;align-items:center;gap:8px;max-width:250px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.nd{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- Topbar -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-icon"><svg viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><line x1="4.5" y1="4" x2="11.5" y2="4"/><line x1="6.5" y1="12" x2="9.5" y2="12"/></svg></div>
+    <div><div class="brand">KDS</div><div class="sub">Kitchen Display</div></div>
+  </div>
+  <div class="top-pills">
+    <span class="pill p-new" id="pillNew">NEW 0</span>
+    <span class="pill p-prep" id="pillPrep">PREP 0</span>
+    <span class="pill p-ready" id="pillReady">READY 0</span>
+  </div>
+  <div class="spacer"></div>
+  <div class="top-right">
+    <span class="live-chip"><span class="live-dot"></span>LIVE</span>
+    <span class="avg-chip">Avg&nbsp;<b id="avgTime">—</b></span>
+    <button class="icon-btn" id="themeBtn" onclick="toggleTheme()">☀️</button>
+    <button class="btn btn-accent" onclick="addDemo()">+ Order</button>
+  </div>
+</div>
+
+<!-- Content -->
+<div class="content">
+
+  <!-- BOARD -->
+  <div class="view active" id="view-board">
+    <div class="board">
+      <div class="lane" id="lane-new" ondragover="onDragOver(event,'new')" ondragleave="onDragLeave(event,'new')" ondrop="onDrop(event,'new')">
+        <div class="lane-hdr"><span class="lane-lbl">New</span><div class="lane-hdr-right"><span class="lane-cnt cnt-new" id="cntNew">0</span></div></div>
+        <div class="lane-scroll" id="laneNew"><div class="lane-drop-hint">Drop here</div><div class="lane-empty">No new orders</div></div>
+      </div>
+      <div class="lane" id="lane-prep" ondragover="onDragOver(event,'prep')" ondragleave="onDragLeave(event,'prep')" ondrop="onDrop(event,'prep')">
+        <div class="lane-hdr"><span class="lane-lbl">Preparing</span><div class="lane-hdr-right"><span class="lane-cnt cnt-prep" id="cntPrep">0</span></div></div>
+        <div class="lane-scroll" id="lanePrep"><div class="lane-drop-hint">Drop here</div><div class="lane-empty">Nothing in prep</div></div>
+      </div>
+      <div class="lane" id="lane-ready" ondragover="onDragOver(event,'ready')" ondragleave="onDragLeave(event,'ready')" ondrop="onDrop(event,'ready')">
+        <div class="lane-hdr"><span class="lane-lbl">Ready</span><div class="lane-hdr-right"><span class="lane-cnt cnt-ready" id="cntReady">0</span></div></div>
+        <div class="lane-scroll" id="laneReady"><div class="lane-drop-hint">Drop here</div><div class="lane-empty">Nothing ready</div></div>
+      </div>
+      <div class="sum-col">
+        <div class="sum-hdr"><h3>To Cook Now</h3><p>Active items aggregated</p></div>
+        <div class="sum-body" id="sumBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BULK VIEW -->
+  <div class="view" id="view-bulk">
+    <div class="sec-bar">
+      <h2>Smart Bulk View — Grouped Items</h2>
+      <span style="font-size:11px;color:var(--text2);font-family:var(--mono)" id="bulkMeta"></span>
+    </div>
+    <div class="bulk-layout">
+      <div class="bulk-main">
+        <div class="scroll-area"><div class="bulk-grid" id="bulkGrid"></div></div>
+      </div>
+      <div class="bulk-sidebar">
+        <div class="bulk-sidebar-hdr"><h3>Summary</h3></div>
+        <div class="bulk-sidebar-body" id="bulkSidebar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- READY QUEUE -->
+  <div class="view" id="view-ready">
+    <div class="ready-banner">
+      <span id="readyTxt">0 orders ready</span>
+      <button class="btn" onclick="serveAll()">Serve All</button>
+    </div>
+    <div class="scroll-area"><div class="ready-grid" id="readyGrid"></div></div>
+  </div>
+
+  <!-- STOCK -->
+  <div class="view" id="view-stock">
+    <div class="sec-bar">
+      <h2>Menu Stock Control</h2>
+      <div style="display:flex;gap:7px;align-items:center">
+        <input id="stockQ" style="padding:8px 11px;border-radius:var(--r-sm);border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-family:var(--font);font-size:12px;outline:none;width:180px;min-height:38px" placeholder="Search items…" oninput="renderStock()">
+        <button class="btn" onclick="allAvail()">All Available</button>
+      </div>
+    </div>
+    <div class="scroll-area"><div class="st-grid" id="stockGrid"></div></div>
+  </div>
+
+  <!-- MORE -->
+  <div class="view" id="view-more">
+    <div class="more-wrap">
+      <div class="cg">
+        <div class="cg-hdr"><h3>Today's Performance</h3></div>
+        <div class="stats-row">
+          <div class="stat-box"><div class="stat-n" id="sTotal">0</div><div class="stat-l">Total</div></div>
+          <div class="stat-box"><div class="stat-n" id="sServed">0</div><div class="stat-l">Served</div></div>
+          <div class="stat-box"><div class="stat-n" id="sAvg">—</div><div class="stat-l">Avg Prep</div></div>
+        </div>
+      </div>
+      <div class="cg">
+        <div class="cg-hdr"><h3>Workflow Configuration</h3></div>
+        <div class="cg-row">
+          <div><div class="cg-lbl">Staff confirmation</div><div class="cg-desc">Orders wait for staff before kitchen</div></div>
+          <div class="stog off" onclick="this.classList.toggle('on');this.classList.toggle('off')"><div class="stog-k"></div></div>
+        </div>
+        <div class="cg-row">
+          <div><div class="cg-lbl">Smart bulk grouping</div><div class="cg-desc">Aggregate same items across bills</div></div>
+          <div class="stog on" onclick="this.classList.toggle('on');this.classList.toggle('off')"><div class="stog-k"></div></div>
+        </div>
+        <div class="cg-row">
+          <div><div class="cg-lbl">Customer notifications</div><div class="cg-desc">Push when order is ready</div></div>
+          <div class="stog off" onclick="this.classList.toggle('on');this.classList.toggle('off')"><div class="stog-k"></div></div>
+        </div>
+        <div class="cg-row"><div class="cg-lbl">Urgent threshold</div><span class="cg-val">10 min</span></div>
+      </div>
+      <div class="cg">
+        <div class="cg-hdr"><h3>System</h3></div>
+        <div class="cg-row"><div class="cg-lbl">Version</div><span class="cg-val">KDS v1.1.0</span></div>
+        <div class="cg-row"><div class="cg-lbl">SignalR</div><span class="cg-val" style="color:var(--green)">● CONNECTED</span></div>
+        <div class="cg-row"><div class="cg-lbl">Deployed</div><span class="cg-val">16 Apr 2026</span></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<!-- Bottom Nav -->
+<div class="bottom-nav">
+  <button class="nav-btn active" id="nav-board" onclick="switchTab('board',this)">
+    <svg class="nav-svg" viewBox="0 0 20 20"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg>
+    Board
+  </button>
+  <button class="nav-btn" id="nav-bulk" onclick="switchTab('bulk',this)">
+    <svg class="nav-svg" viewBox="0 0 20 20"><rect x="2" y="3" width="16" height="3" rx="1"/><rect x="2" y="8.5" width="16" height="3" rx="1"/><rect x="2" y="14" width="16" height="3" rx="1"/></svg>
+    Bulk View
+  </button>
+  <button class="nav-btn" id="nav-ready" onclick="switchTab('ready',this)">
+    <svg class="nav-svg" viewBox="0 0 20 20"><polyline points="3,10 8,15 17,5"/></svg>
+    Ready Queue
+    <span class="nav-badge" id="readyBadge" style="display:none">0</span>
+  </button>
+  <button class="nav-btn" id="nav-stock" onclick="switchTab('stock',this)">
+    <svg class="nav-svg" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/><line x1="10" y1="6.5" x2="10" y2="10.5"/><line x1="10" y1="13" x2="10" y2="13.5" stroke-width="2.5"/></svg>
+    Stock
+  </button>
+  <button class="nav-btn" id="nav-more" onclick="switchTab('more',this)">
+    <svg class="nav-svg" viewBox="0 0 20 20"><circle cx="5" cy="10" r="1.5" fill="currentColor" stroke="none"/><circle cx="10" cy="10" r="1.5" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r="1.5" fill="currentColor" stroke="none"/></svg>
+    More
+  </button>
+</div>
+
+<div class="notif-stack" id="notifStack"></div>
+</div>
+
+<script>
+/* ── Data ── */
+const MENU=[
+  {id:'fried-rice',name:'Fried Rice',cat:'Mains',avail:true},
+  {id:'butter-naan',name:'Butter Naan',cat:'Breads',avail:true},
+  {id:'garlic-naan',name:'Garlic Naan',cat:'Breads',avail:true},
+  {id:'carbonara',name:'Carbonara',cat:'Pasta',avail:true},
+  {id:'pizza',name:'Margherita Pizza',cat:'Mains',avail:true},
+  {id:'burger',name:'Classic Burger',cat:'Mains',avail:true},
+  {id:'fries',name:'Fries',cat:'Sides',avail:true},
+  {id:'wings',name:'Chicken Wings',cat:'Starters',avail:true},
+  {id:'rice',name:'Steamed Rice',cat:'Sides',avail:true},
+  {id:'noodles',name:'Stir-Fry Noodles',cat:'Mains',avail:true},
+  {id:'mojito',name:'Virgin Mojito',cat:'Drinks',avail:true},
+  {id:'coke',name:'Coke',cat:'Drinks',avail:true},
+  {id:'cola',name:'Cola',cat:'Drinks',avail:true},
+  {id:'tea',name:'Masala Tea',cat:'Drinks',avail:true},
+];
+
+let orders=[
+  {id:'T1045',table:'T5',type:'Dine In',status:'new',t0:Date.now()-2*60000,items:[{n:'Fried Rice',q:2,done:false},{n:'Butter Naan',q:3,done:false}]},
+  {id:'T1047',table:'T12',type:'Dine In',status:'new',t0:Date.now()-5*60000,items:[{n:'Fried Rice',q:2,done:false},{n:'Virgin Mojito',q:2,done:false}]},
+  {id:'T1049',table:'T8',type:'Takeaway',status:'new',t0:Date.now()-1*60000,items:[{n:'Classic Burger',q:1,done:false},{n:'Cola',q:1,done:false}]},
+  {id:'T1042',table:'T3',type:'Dine In',status:'prep',t0:Date.now()-8*60000,items:[{n:'Carbonara',q:1,done:false},{n:'Coke',q:1,done:false}]},
+  {id:'T1044',table:'T9',type:'Delivery',status:'prep',t0:Date.now()-6*60000,items:[{n:'Margherita Pizza',q:2,done:false},{n:'Fries',q:1,done:false}]},
+  {id:'T1039',table:'TKY',type:'Takeaway',status:'ready',t0:Date.now()-3*60000,items:[{n:'Steamed Rice',q:1,done:true},{n:'Chicken Wings',q:2,done:true}]},
+  {id:'T1038',table:'T1',type:'Dine In',status:'ready',t0:Date.now()-2*60000,items:[{n:'Stir-Fry Noodles',q:1,done:true},{n:'Masala Tea',q:1,done:true}]},
+];
+
+let idN=1049,served=0,prepLog=[];
+const URGENT=10;
+let dragId=null;
+
+/* ── Helpers ── */
+function mins(o){return Math.floor((Date.now()-o.t0)/60000)}
+function tCls(m){return m<=5?'t-ok':m<=9?'t-warn':'t-hot'}
+function urgCls(m){return m>=URGENT?'urgent':m>=URGENT-3?'warn':''}
+function typeTag(t){
+  if(t==='Dine In')return`<span class="type-tag tt-dine">Dine In</span>`;
+  if(t==='Takeaway')return`<span class="type-tag tt-take">Takeaway</span>`;
+  return`<span class="type-tag tt-del">Delivery</span>`;
+}
+
+/* ── Item click handler ── */
+function clickItem(oid,idx){
+  const o=orders.find(x=>x.id===oid);
+  if(!o)return;
+  // In ready state items are still visible but clicking is disabled (no accident)
+  if(o.status==='ready'||o.status==='done')return;
+  // If new → auto-move to prep first
+  if(o.status==='new'){
+    o.status='prep';
+    notify(`#${o.id} moved to Preparing`,'blue');
+  }
+  // Toggle item done
+  o.items[idx].done=!o.items[idx].done;
+  // Check if all items done → move to ready
+  if(o.items.every(i=>i.done)){
+    o.status='ready';
+    notify(`#${o.id} — all items ready!`,'green');
+  }
+  render();
+}
+
+/* ── Accept / CTA ── */
+function acceptOrder(oid){
+  const o=orders.find(x=>x.id===oid);
+  if(!o||o.status!=='new')return;
+  o.status='prep';
+  notify(`#${o.id} accepted — preparing`,'blue');
+  render();
+}
+function markReady(oid){
+  const o=orders.find(x=>x.id===oid);
+  if(!o||o.status!=='prep')return;
+  o.items.forEach(i=>i.done=true);
+  o.status='ready';
+  notify(`#${o.id} ready for service!`,'green');
+  render();
+}
+function markServed(oid){
+  const o=orders.find(x=>x.id===oid);
+  if(!o||o.status!=='ready')return;
+  prepLog.push(mins(o));served++;o.status='done';
+  notify(`#${o.id} served`,'amber');
+  render();
+}
+
+/* ── Move up/down within lane ── */
+function moveInLane(oid,dir){
+  const o=orders.find(x=>x.id===oid);
+  if(!o)return;
+  const same=orders.filter(x=>x.status===o.status);
+  const idx=same.indexOf(o);
+  const newIdx=idx+dir;
+  if(newIdx<0||newIdx>=same.length)return;
+  // swap in main orders array
+  const aIdx=orders.indexOf(o);
+  const bIdx=orders.indexOf(same[newIdx]);
+  [orders[aIdx],orders[bIdx]]=[orders[bIdx],orders[aIdx]];
+  render();
+}
+
+/* ── Progress ── */
+function progressPct(o){
+  if(o.status==='new')return 0;
+  if(o.status==='ready'||o.status==='done')return 100;
+  const done=o.items.filter(i=>i.done).length;
+  return Math.round(done/o.items.length*100);
+}
+function progressColor(pct){
+  if(pct===0)return'var(--border2)';
+  if(pct<50)return'var(--amber)';
+  if(pct<100)return'var(--blue)';
+  return'var(--green)';
+}
+
+/* ── Card HTML ── */
+function cardHtml(o){
+  const m=mins(o);
+  const pct=progressPct(o);
+  const isReady=o.status==='ready';
+  const isNew=o.status==='new';
+  const isPrep=o.status==='prep';
+
+  // items
+  const itemsHtml=o.items.map((it,idx)=>{
+    const clickable=!isReady&&o.status!=='done';
+    const doneClass=it.done?'done':'';
+    const hintTitle=clickable?(it.done?'Click to unmark':'Click to mark as done — auto-advances card'):'';
+    return`<div class="item-row ${doneClass}" ${clickable?`onclick="clickItem('${o.id}',${idx})" title="${hintTitle}"`:'style="cursor:default"'}>
+      <span class="item-q">${it.q}×</span>
+      <span class="item-n">${it.n}</span>
+      <span class="item-check"></span>
+    </div>`;
+  }).join('');
+
+  // hint text
+  let hintHtml='';
+  if(isNew) hintHtml=`<div class="item-hint">Tap item to start prep · or Accept all</div>`;
+  else if(isPrep) hintHtml=`<div class="item-hint">Tap item when done — all done = Ready</div>`;
+
+  // CTA
+  let ctaHtml='';
+  if(isNew){
+    ctaHtml=`<div class="cta-area">
+      <button class="cta-btn cta-accept" onclick="acceptOrder('${o.id}')">Accept Order</button>
+    </div>`;
+  } else if(isPrep){
+    ctaHtml=`<div class="cta-area">
+      <button class="cta-btn cta-ready" onclick="markReady('${o.id}')">Mark All Ready</button>
+    </div>`;
+  } else if(isReady){
+    ctaHtml=`<div class="cta-area">
+      <button class="cta-btn cta-served" onclick="markServed('${o.id}')">Mark Served</button>
+    </div>`;
+  }
+
+  // sort arrows
+  const arrowsHtml=`<div class="sort-arrows">
+    <button class="sort-arrow" onclick="moveInLane('${o.id}',-1)" title="Move up">↑</button>
+    <button class="sort-arrow" onclick="moveInLane('${o.id}',1)" title="Move down">↓</button>
+  </div>`;
+
+  return`<div class="ocard ${urgCls(m)}" id="card-${o.id}" draggable="true"
+    ondragstart="onDragStart(event,'${o.id}')" ondragend="onDragEnd(event,'${o.id}')">
+    <div class="drag-handle" title="Drag to another lane">
+      <svg viewBox="0 0 14 14"><circle cx="5" cy="3.5" r="1" fill="currentColor" stroke="none"/><circle cx="9" cy="3.5" r="1" fill="currentColor" stroke="none"/><circle cx="5" cy="7" r="1" fill="currentColor" stroke="none"/><circle cx="9" cy="7" r="1" fill="currentColor" stroke="none"/><circle cx="5" cy="10.5" r="1" fill="currentColor" stroke="none"/><circle cx="9" cy="10.5" r="1" fill="currentColor" stroke="none"/></svg>
+    </div>
+    <div class="card-hd">
+      <div>
+        <div class="card-id">#${o.id}</div>
+        <div class="card-meta">${o.table} · ${o.type}</div>
+      </div>
+      <div class="card-rt">
+        <span class="t-badge ${tCls(m)}">${m}m</span>
+        ${typeTag(o.type)}
+      </div>
+      ${arrowsHtml}
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${progressColor(pct)}"></div></div>
+    <div class="card-items">${itemsHtml}${hintHtml}</div>
+    ${ctaHtml}
+  </div>`;
+}
+
+/* ── Drag & Drop ── */
+function onDragStart(e,id){
+  dragId=id;
+  e.dataTransfer.effectAllowed='move';
+  setTimeout(()=>{
+    const el=document.getElementById('card-'+id);
+    if(el)el.classList.add('dragging');
+  },0);
+}
+function onDragEnd(e,id){
+  const el=document.getElementById('card-'+id);
+  if(el)el.classList.remove('dragging');
+  // remove all drag-over states
+  ['new','prep','ready'].forEach(s=>{
+    const l=document.getElementById('lane-'+s);
+    if(l)l.classList.remove('drag-over');
+  });
+  dragId=null;
+}
+function onDragOver(e,status){
+  e.preventDefault();
+  e.dataTransfer.dropEffect='move';
+  const lane=document.getElementById('lane-'+status);
+  if(lane)lane.classList.add('drag-over');
+}
+function onDragLeave(e,status){
+  const lane=document.getElementById('lane-'+status);
+  if(lane)lane.classList.remove('drag-over');
+}
+function onDrop(e,status){
+  e.preventDefault();
+  const lane=document.getElementById('lane-'+status);
+  if(lane)lane.classList.remove('drag-over');
+  if(!dragId)return;
+  const o=orders.find(x=>x.id===dragId);
+  if(!o||o.status===status)return;
+  const prev=o.status;
+  o.status=status;
+  // handle item states on drop
+  if(status==='ready')o.items.forEach(i=>i.done=true);
+  if(status==='new')o.items.forEach(i=>i.done=false);
+  notify(`#${o.id} moved → ${status.charAt(0).toUpperCase()+status.slice(1)}`,'blue');
+  render();
+}
+
+/* ── Summary data ── */
+function sumData(){
+  const m={};
+  orders.filter(o=>o.status==='new'||o.status==='prep').forEach(o=>o.items.forEach(i=>{
+    if(!m[i.n])m[i.n]={total:0,pending:0};
+    m[i.n].total+=i.q;
+    if(!i.done)m[i.n].pending+=i.q;
+  }));
+  return Object.entries(m).sort((a,b)=>b[1].total-a[1].total);
+}
+
+/* ── Bulk data ── */
+function bulkData(){
+  const m={};
+  orders.filter(o=>o.status==='new'||o.status==='prep').forEach(o=>o.items.forEach(i=>{
+    if(!m[i.n])m[i.n]={total:0,pending:0,bills:[]};
+    m[i.n].total+=i.q;
+    if(!i.done)m[i.n].pending+=i.q;
+    m[i.n].bills.push({bill:o.id,qty:i.q,type:o.type,done:i.done});
+  }));
+  return Object.entries(m).sort((a,b)=>b[1].total-a[1].total);
+}
+
+/* ── Render ── */
+function render(){
+  const by=s=>orders.filter(o=>o.status===s);
+  const nw=by('new'),pr=by('prep'),rd=by('ready');
+
+  // lanes
+  document.getElementById('laneNew').innerHTML=(nw.length?nw.map(cardHtml).join(''):'<div class="lane-empty">No new orders</div>')+
+    '<div class="lane-drop-hint">Drop here</div>';
+  document.getElementById('lanePrep').innerHTML=(pr.length?pr.map(cardHtml).join(''):'<div class="lane-empty">Nothing in prep</div>')+
+    '<div class="lane-drop-hint">Drop here</div>';
+  document.getElementById('laneReady').innerHTML=(rd.length?rd.map(cardHtml).join(''):'<div class="lane-empty">Nothing ready</div>')+
+    '<div class="lane-drop-hint">Drop here</div>';
+
+  // counts
+  document.getElementById('cntNew').textContent=nw.length;
+  document.getElementById('cntPrep').textContent=pr.length;
+  document.getElementById('cntReady').textContent=rd.length;
+  document.getElementById('pillNew').textContent='NEW '+nw.length;
+  document.getElementById('pillPrep').textContent='PREP '+pr.length;
+  document.getElementById('pillReady').textContent='READY '+rd.length;
+
+  // nav badge
+  const rb=document.getElementById('readyBadge');
+  rb.textContent=rd.length;rb.style.display=rd.length?'flex':'none';
+
+  // summary
+  const sd=sumData();
+  document.getElementById('sumBody').innerHTML=sd.length?sd.map(([n,d])=>`
+    <div class="s-card">
+      <div class="s-row"><span class="s-name">${n}</span><span class="s-qty">${d.pending}</span></div>
+      ${d.pending!==d.total?`<div class="s-breakdown">${d.total-d.pending} of ${d.total} done</div>`:''}
+    </div>`).join(''):'<div style="color:var(--text3);font-size:11px;text-align:center;padding:18px;font-family:var(--mono)">No active items</div>';
+
+  // avg
+  const active=[...nw,...pr];
+  const avg=active.length?Math.round(active.reduce((a,o)=>a+mins(o),0)/active.length):null;
+  document.getElementById('avgTime').textContent=avg!=null?avg+'m':'—';
+
+  renderBulk();renderReadyQ();
+  document.getElementById('sTotal').textContent=orders.length;
+  document.getElementById('sServed').textContent=served;
+  document.getElementById('sAvg').textContent=prepLog.length?Math.round(prepLog.reduce((a,b)=>a+b,0)/prepLog.length)+'m':'—';
+}
+
+function renderBulk(){
+  const bd=bulkData();
+  const totalItems=bd.reduce((a,[,d])=>a+d.total,0);
+  const pendingItems=bd.reduce((a,[,d])=>a+d.pending,0);
+  document.getElementById('bulkMeta').textContent=`${bd.length} items · ${totalItems} qty · ${pendingItems} pending`;
+
+  // sidebar stats
+  const nw=orders.filter(o=>o.status==='new').length;
+  const pr=orders.filter(o=>o.status==='prep').length;
+  document.getElementById('bulkSidebar').innerHTML=`
+    <div class="bulk-stat-card"><div class="bsc-label">Active Orders</div><div class="bsc-val">${nw+pr}</div><div class="bsc-sub">${nw} new · ${pr} in prep</div></div>
+    <div class="bulk-stat-card"><div class="bsc-label">Total Items Pending</div><div class="bsc-val" style="color:var(--amber)">${pendingItems}</div><div class="bsc-sub">of ${totalItems} total active</div></div>
+    <div class="bulk-stat-card"><div class="bsc-label">Unique Menu Items</div><div class="bsc-val" style="color:var(--purple)">${bd.length}</div><div class="bsc-sub">across active orders</div></div>
+    ${bd.slice(0,3).map(([n,d],i)=>`<div class="bulk-stat-card">
+      <div class="bsc-label" style="color:${['var(--blue)','var(--amber)','var(--green)'][i]}">#${i+1} by volume</div>
+      <div style="font-size:13px;font-weight:600;margin-top:2px">${n}</div>
+      <div class="bsc-sub">${d.total} total · ${d.pending} pending</div>
+    </div>`).join('')}
+  `;
+
+  document.getElementById('bulkGrid').innerHTML=bd.length?bd.map(([n,d])=>{
+    const pct=d.total>0?Math.round((d.total-d.pending)/d.total*100):0;
+    return`<div class="bc">
+      <div class="bc-top">
+        <div><div class="bc-name">${n}</div><div class="bc-cat">${getCat(n)}</div></div>
+        <div class="bc-qty">${d.pending}</div>
+      </div>
+      <div class="bc-prog"><div class="bc-prog-fill" style="width:${pct}%"></div></div>
+      <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">${pct}% complete · ${d.total} total</div>
+      <hr class="bc-div">
+      <div class="bc-bills">
+        ${d.bills.map(b=>`<div class="bc-row">
+          <span class="bc-bill-id">#${b.bill}</span>
+          <div style="display:flex;align-items:center;gap:4px">
+            <span class="bc-bill-type ${b.type==='Dine In'?'tt-dine':b.type==='Takeaway'?'tt-take':'tt-del'}" style="font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;letter-spacing:.4px;text-transform:uppercase">${b.type==='Dine In'?'Dine':'b.type==="Takeaway"?"TKY":"DEL"}'}</span>
+            <span class="bc-bill-qty">${b.qty}×</span>
+            ${b.done?'<span style="font-size:10px;color:var(--green)">✓</span>':''}
+          </div>
+        </div>`).join('')}
+        <div class="bc-total-row"><span>Total</span><span style="color:var(--blue)">${d.total}×</span></div>
+      </div>
+    </div>`;
+  }).join(''):'<div style="color:var(--text3);font-size:12px;font-family:var(--mono);padding:28px;text-align:center">No active items</div>';
+}
+
+function getCat(name){
+  const m=MENU.find(x=>x.name===name);return m?m.cat:'';
+}
+
+function renderReadyQ(){
+  const rd=orders.filter(o=>o.status==='ready');
+  document.getElementById('readyTxt').textContent=`${rd.length} order${rd.length!==1?'s':''} ready for service`;
+  document.getElementById('readyGrid').innerHTML=rd.length?rd.map(o=>`
+    <div class="rc">
+      <div class="rc-hd"><span class="rc-id">#${o.id}</span><span class="rc-elapsed">${mins(o)}m</span></div>
+      <div style="font-size:10px;color:var(--text2);font-family:var(--mono);margin-bottom:4px">${o.table} · ${o.type}</div>
+      <div class="rc-items-list">${o.items.map(i=>`<div class="rc-item"><span class="rc-item-q">${i.q}×</span><span class="rc-item-n">${i.n}</span></div>`).join('')}</div>
+      <button class="rc-btn" onclick="markServed('${o.id}')">Mark Served</button>
+    </div>`).join(''):'<div style="color:var(--text3);font-size:12px;font-family:var(--mono);padding:28px;text-align:center">No orders ready yet</div>';
+}
+
+function renderStock(){
+  const q=(document.getElementById('stockQ').value||'').toLowerCase();
+  const list=MENU.filter(m=>m.name.toLowerCase().includes(q)||m.cat.toLowerCase().includes(q));
+  document.getElementById('stockGrid').innerHTML=list.map(it=>`
+    <div class="si ${it.avail?'':'oos'}">
+      <div class="si-top">
+        <div><div class="si-name">${it.name}</div><div class="si-cat">${it.cat}</div></div>
+        <span class="si-tag ${it.avail?'si-avail':'si-oos-t'}">${it.avail?'AVAIL':'OOS'}</span>
+      </div>
+      <div class="si-bot">
+        <span class="si-lbl">${it.avail?'In stock':'Out of stock'}</span>
+        <div class="tog ${it.avail?'on':'off'}" onclick="toggleStock('${it.id}')"><div class="tog-k"></div></div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleStock(id){
+  const it=MENU.find(m=>m.id===id);if(!it)return;
+  it.avail=!it.avail;
+  notify(`${it.name} → ${it.avail?'Available':'Out of Stock'}`,it.avail?'green':'red');
+  renderStock();
+}
+function allAvail(){MENU.forEach(m=>m.avail=true);notify('All items available','green');renderStock();}
+function serveAll(){
+  orders.filter(o=>o.status==='ready').forEach(o=>{prepLog.push(mins(o));served++;o.status='done';});
+  notify('All ready orders served','green');render();
+}
+
+function switchTab(name,el){
+  document.querySelectorAll('.nav-btn').forEach(n=>n.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('view-'+name).classList.add('active');
+  if(name==='stock')renderStock();
+  if(name==='bulk')renderBulk();
+  if(name==='ready')renderReadyQ();
+}
+
+let isDark=false;
+function toggleTheme(){
+  isDark=!isDark;
+  document.documentElement.setAttribute('data-theme',isDark?'dark':'light');
+  document.getElementById('themeBtn').textContent=isDark?'🌙':'☀️';
+}
+
+const TABLES=['T2','T4','T6','T7','T10','T11','T13','BAR','TKY'];
+const TYPES=['Dine In','Dine In','Dine In','Takeaway','Delivery'];
+const POOL=['Fried Rice','Butter Naan','Carbonara','Margherita Pizza','Classic Burger','Fries','Chicken Wings','Stir-Fry Noodles','Virgin Mojito','Coke','Garlic Naan','Steamed Rice'];
+
+function addDemo(){
+  idN++;
+  const n=Math.floor(Math.random()*3)+1;
+  const items=[...POOL].sort(()=>Math.random()-.5).slice(0,n).map(nm=>({n:nm,q:Math.floor(Math.random()*3)+1,done:false}));
+  const o={id:'T'+idN,table:TABLES[Math.floor(Math.random()*TABLES.length)],type:TYPES[Math.floor(Math.random()*TYPES.length)],status:'new',t0:Date.now(),items};
+  orders.push(o);
+  notify(`New order #T${idN} — ${o.table} · ${o.type}`,'amber');
+  render();
+}
+
+function notify(msg,color){
+  const cols={green:'var(--green)',amber:'var(--amber)',blue:'var(--blue)',red:'var(--red)'};
+  const stack=document.getElementById('notifStack');
+  const n=document.createElement('div');n.className='notif';
+  n.innerHTML=`<span class="nd" style="background:${cols[color]||'#aaa'}"></span><span>${msg}</span>`;
+  stack.appendChild(n);
+  setTimeout(()=>{n.style.opacity='0';n.style.transition='opacity 0.4s';setTimeout(()=>n.remove(),400);},3000);
+}
+
+setInterval(()=>render(),30000);
+render();
+</script>
+</body>
+</html>
