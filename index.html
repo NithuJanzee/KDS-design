@@ -101,18 +101,36 @@ button{font-family:var(--font);cursor:pointer}
 .lane-drop-hint{position:absolute;inset:8px;border:2px dashed var(--blue-bdr);border-radius:var(--r);background:var(--blue-bg);opacity:0;pointer-events:none;transition:opacity .2s;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--blue);font-weight:600}
 
 /* ── Summary ── */
-.sum-col{width:200px;flex-shrink:0;border-left:1px solid var(--border);background:var(--bg2);display:flex;flex-direction:column}
-.sum-hdr{padding:11px 13px;border-bottom:1px solid var(--border);flex-shrink:0}
-.sum-hdr h3{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text2)}
-.sum-hdr p{font-size:10px;color:var(--text3);margin-top:1px;font-family:var(--mono)}
-.sum-body{flex:1;overflow-y:auto;padding:8px}
+.sum-col{width:270px;flex-shrink:0;border-left:2px solid var(--border);background:var(--bg2);display:flex;flex-direction:column}
+.sum-hdr{padding:12px 14px 10px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--bg3)}
+.sum-hdr-row{display:flex;align-items:center;justify-content:space-between}
+.sum-hdr h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text2)}
+.sum-hdr p{font-size:10px;color:var(--text3);margin-top:2px;font-family:var(--mono)}
+.sum-hint{font-size:10px;color:var(--blue);font-family:var(--mono);background:var(--blue-bg);border:1px solid var(--blue-bdr);border-radius:20px;padding:2px 8px;white-space:nowrap}
+.sum-body{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:7px}
 .sum-body::-webkit-scrollbar{width:3px}
 .sum-body::-webkit-scrollbar-thumb{background:var(--border2)}
-.s-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);padding:9px 11px;margin-bottom:6px}
-.s-row{display:flex;justify-content:space-between;align-items:center}
-.s-name{font-size:12px;font-weight:600}
-.s-qty{font-size:20px;font-weight:700;font-family:var(--mono);color:var(--blue)}
-.s-breakdown{font-size:10px;color:var(--text3);margin-top:3px;font-family:var(--mono)}
+/* clickable summary card */
+.s-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:11px 13px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden}
+.s-card:hover{border-color:var(--blue-bdr);background:var(--blue-bg);box-shadow:var(--shadow-md)}
+.s-card:hover .s-action-hint{opacity:1}
+.s-card.all-done{border-color:var(--green-bdr);background:var(--green-bg)}
+.s-card.all-done .s-qty{color:var(--green)}
+.s-card.all-done .s-name{text-decoration:line-through;color:var(--text3)}
+.s-top-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.s-name-wrap{flex:1;min-width:0}
+.s-name{font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-cat{font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+.s-qty-wrap{display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0}
+.s-qty{font-size:32px;font-weight:700;font-family:var(--mono);color:var(--blue);line-height:1}
+.s-qty-label{font-size:9px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.4px;margin-top:1px}
+.s-prog{height:3px;background:var(--border);border-radius:3px;overflow:hidden;margin:8px 0 5px}
+.s-prog-fill{height:100%;border-radius:3px;transition:width .3s,background .3s}
+.s-meta-row{display:flex;justify-content:space-between;align-items:center}
+.s-breakdown{font-size:10px;color:var(--text3);font-family:var(--mono)}
+.s-bills-count{font-size:10px;color:var(--text2);font-family:var(--mono)}
+.s-action-hint{position:absolute;bottom:0;left:0;right:0;background:var(--blue);color:#fff;text-align:center;font-size:10px;font-weight:600;padding:5px;opacity:0;transition:opacity .15s;font-family:var(--mono);letter-spacing:.3px}
+.s-card.all-done .s-action-hint{background:var(--green)}
 
 /* ── Order Card ── */
 .ocard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:12px 13px;display:flex;flex-direction:column;gap:9px;box-shadow:var(--shadow);transition:box-shadow .15s,transform .1s,border-color .15s;position:relative}
@@ -233,6 +251,22 @@ button{font-family:var(--font);cursor:pointer}
 .rc-btn{width:100%;padding:10px;border:none;border-radius:var(--r-sm);background:var(--green);color:#fff;font-weight:600;font-size:13px;transition:background .15s;min-height:44px}
 .rc-btn:hover{background:#15803d}
 
+/* ── Recall styles ── */
+.item-row.done.recallable{cursor:pointer}
+.item-row.done.recallable:hover{background:var(--amber-bg);border-color:var(--amber-bdr)}
+.item-row.done.recallable:hover .item-n{text-decoration:line-through;color:var(--amber)}
+.item-row.done.recallable:hover .item-check{background:var(--amber);border-color:var(--amber)}
+.item-row.done.recallable:hover .item-q{color:var(--amber)}
+.recall-hint{font-size:10px;color:var(--amber);text-align:center;padding:3px 0;font-family:var(--mono);font-style:italic}
+.cta-recall{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-bdr);font-weight:600}
+.cta-recall:hover{background:var(--amber);color:#fff}
+/* served card in ready queue */
+.rc.served{border-color:var(--border);background:var(--bg3);opacity:.85}
+.rc.served .rc-id{color:var(--text2)}
+.rc-served-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;background:var(--green-bg);color:var(--green);border:1px solid var(--green-bdr);font-family:var(--mono)}
+.rc-recall-btn{width:100%;padding:10px;border-radius:var(--r-sm);background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-bdr);font-weight:600;font-size:13px;cursor:pointer;transition:all .15s;min-height:44px}
+.rc-recall-btn:hover{background:var(--amber);color:#fff}
+.rc-divider{border:none;border-top:1px solid var(--border);margin:2px 0}
 /* ── Stock ── */
 .st-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(192px,1fr));gap:8px}
 .si{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:13px;box-shadow:var(--shadow);transition:border-color .15s}
@@ -289,7 +323,7 @@ button{font-family:var(--font);cursor:pointer}
 <div class="topbar">
   <div class="logo">
     <div class="logo-icon"><svg viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><line x1="4.5" y1="4" x2="11.5" y2="4"/><line x1="6.5" y1="12" x2="9.5" y2="12"/></svg></div>
-    <div><div class="brand">KDS - Demo</div><div class="sub">Kitchen Display</div></div>
+    <div><div class="brand">KDS</div><div class="sub">Kitchen Display</div></div>
   </div>
   <div class="top-pills">
     <span class="pill p-new" id="pillNew">NEW 0</span>
@@ -324,7 +358,10 @@ button{font-family:var(--font);cursor:pointer}
         <div class="lane-scroll" id="laneReady"><div class="lane-drop-hint">Drop here</div><div class="lane-empty">Nothing ready</div></div>
       </div>
       <div class="sum-col">
-        <div class="sum-hdr"><h3>To Cook Now</h3><p>Active items aggregated</p></div>
+        <div class="sum-hdr">
+          <div class="sum-hdr-row"><h3>To Cook Now</h3><span class="sum-hint">Tap to cook all</span></div>
+          <p>Click any item to mark all bills as preparing</p>
+        </div>
         <div class="sum-body" id="sumBody"></div>
       </div>
     </div>
@@ -517,8 +554,44 @@ function markReady(oid){
 function markServed(oid){
   const o=orders.find(x=>x.id===oid);
   if(!o||o.status!=='ready')return;
-  prepLog.push(mins(o));served++;o.status='done';
+  prepLog.push(mins(o));served++;
+  o.status='done';
+  o.servedAt=Date.now();
   notify(`#${o.id} served`,'amber');
+  render();
+}
+
+/* ── Recall single item from Ready → back to Preparing (unmark that item) ── */
+function recallItem(oid,idx){
+  const o=orders.find(x=>x.id===oid);
+  if(!o||o.status!=='ready')return;
+  o.items[idx].done=false;
+  o.status='prep';
+  notify(`#${o.id} recalled — ${o.items[idx].n} not ready`,'amber');
+  render();
+}
+
+/* ── Recall entire order from Ready → Preparing, unmark all items ── */
+function recallOrder(oid){
+  const o=orders.find(x=>x.id===oid);
+  if(!o||o.status!=='ready')return;
+  o.items.forEach(i=>i.done=false);
+  o.status='prep';
+  notify(`#${o.id} recalled to Preparing`,'amber');
+  render();
+}
+
+/* ── Recall a served (done) order back to Ready ── */
+function recallServed(oid){
+  const o=orders.find(x=>x.id===oid);
+  if(!o||o.status!=='done')return;
+  // Remove last served log entry for this order if present
+  if(prepLog.length>0)prepLog.pop();
+  served=Math.max(0,served-1);
+  o.items.forEach(i=>i.done=true);
+  o.status='ready';
+  delete o.servedAt;
+  notify(`#${o.id} recalled from served — back to Ready`,'red');
   render();
 }
 
@@ -561,9 +634,17 @@ function cardHtml(o){
 
   // items
   const itemsHtml=o.items.map((it,idx)=>{
-    const clickable=!isReady&&o.status!=='done';
+    if(isReady){
+      // In ready: items are struck through but clickable to recall individual item
+      return`<div class="item-row done recallable" onclick="recallItem('${o.id}',${idx})" title="Tap to recall this item back to preparing">
+        <span class="item-q">${it.q}×</span>
+        <span class="item-n">${it.n}</span>
+        <span class="item-check"></span>
+      </div>`;
+    }
+    const clickable=o.status!=='done';
     const doneClass=it.done?'done':'';
-    const hintTitle=clickable?(it.done?'Click to unmark':'Click to mark as done — auto-advances card'):'';
+    const hintTitle=clickable?(it.done?'Click to unmark':'Click to mark as done'):'';
     return`<div class="item-row ${doneClass}" ${clickable?`onclick="clickItem('${o.id}',${idx})" title="${hintTitle}"`:'style="cursor:default"'}>
       <span class="item-q">${it.q}×</span>
       <span class="item-n">${it.n}</span>
@@ -575,6 +656,7 @@ function cardHtml(o){
   let hintHtml='';
   if(isNew) hintHtml=`<div class="item-hint">Tap item to start prep · or Accept all</div>`;
   else if(isPrep) hintHtml=`<div class="item-hint">Tap item when done — all done = Ready</div>`;
+  else if(isReady) hintHtml=`<div class="recall-hint">Tap any item to recall it back to preparing</div>`;
 
   // CTA
   let ctaHtml='';
@@ -588,6 +670,7 @@ function cardHtml(o){
     </div>`;
   } else if(isReady){
     ctaHtml=`<div class="cta-area">
+      <button class="cta-btn cta-recall" onclick="recallOrder('${o.id}')">Recall Order</button>
       <button class="cta-btn cta-served" onclick="markServed('${o.id}')">Mark Served</button>
     </div>`;
   }
@@ -669,11 +752,36 @@ function onDrop(e,status){
 function sumData(){
   const m={};
   orders.filter(o=>o.status==='new'||o.status==='prep').forEach(o=>o.items.forEach(i=>{
-    if(!m[i.n])m[i.n]={total:0,pending:0};
+    if(!m[i.n])m[i.n]={total:0,pending:0,bills:[]};
     m[i.n].total+=i.q;
     if(!i.done)m[i.n].pending+=i.q;
+    m[i.n].bills.push(o.id);
   }));
-  return Object.entries(m).sort((a,b)=>b[1].total-a[1].total);
+  return Object.entries(m).sort((a,b)=>b[1].pending-a[1].pending);
+}
+
+/* ── Click a summary item — mark ALL bills containing it as preparing, strike item ── */
+function clickSummaryItem(itemName){
+  let affected=0;
+  orders.forEach(o=>{
+    if(o.status==='done'||o.status==='ready')return;
+    const it=o.items.find(i=>i.n===itemName);
+    if(!it)return;
+    it.done=true;
+    affected++;
+    // If was new → move to prep
+    if(o.status==='new'){
+      o.status='prep';
+    }
+    // If all items now done → move to ready
+    if(o.items.every(i=>i.done)){
+      o.status='ready';
+    }
+  });
+  if(affected>0){
+    notify(`${itemName} marked done across ${affected} order${affected>1?'s':''}`, 'blue');
+    render();
+  }
 }
 
 /* ── Bulk data ── */
@@ -715,11 +823,31 @@ function render(){
 
   // summary
   const sd=sumData();
-  document.getElementById('sumBody').innerHTML=sd.length?sd.map(([n,d])=>`
-    <div class="s-card">
-      <div class="s-row"><span class="s-name">${n}</span><span class="s-qty">${d.pending}</span></div>
-      ${d.pending!==d.total?`<div class="s-breakdown">${d.total-d.pending} of ${d.total} done</div>`:''}
-    </div>`).join(''):'<div style="color:var(--text3);font-size:11px;text-align:center;padding:18px;font-family:var(--mono)">No active items</div>';
+  document.getElementById('sumBody').innerHTML=sd.length?sd.map(([n,d])=>{
+    const pct=d.total>0?Math.round((d.total-d.pending)/d.total*100):0;
+    const allDone=d.pending===0;
+    const progColor=allDone?'var(--green)':pct>50?'var(--blue)':'var(--amber)';
+    const billCount=[...new Set(d.bills)].length;
+    const cat=getCat(n);
+    return`<div class="s-card ${allDone?'all-done':''}" onclick="clickSummaryItem('${n.replace(/'/g,"\\'")}')">
+      <div class="s-top-row">
+        <div class="s-name-wrap">
+          <div class="s-name">${n}</div>
+          ${cat?`<div class="s-cat">${cat}</div>`:''}
+        </div>
+        <div class="s-qty-wrap">
+          <div class="s-qty">${d.pending}</div>
+          <div class="s-qty-label">pending</div>
+        </div>
+      </div>
+      <div class="s-prog"><div class="s-prog-fill" style="width:${pct}%;background:${progColor}"></div></div>
+      <div class="s-meta-row">
+        <span class="s-breakdown">${pct}% done · ${d.total} total</span>
+        <span class="s-bills-count">${billCount} bill${billCount>1?'s':''}</span>
+      </div>
+      <div class="s-action-hint">${allDone?'✓ All done':'▶ Cook all bills'}</div>
+    </div>`;
+  }).join(''):'<div style="color:var(--text3);font-size:11px;text-align:center;padding:22px 10px;font-family:var(--mono)">No active items</div>';
 
   // avg
   const active=[...nw,...pr];
@@ -783,14 +911,53 @@ function getCat(name){
 
 function renderReadyQ(){
   const rd=orders.filter(o=>o.status==='ready');
+  const done=orders.filter(o=>o.status==='done').slice(-6).reverse(); // show last 6 served
   document.getElementById('readyTxt').textContent=`${rd.length} order${rd.length!==1?'s':''} ready for service`;
-  document.getElementById('readyGrid').innerHTML=rd.length?rd.map(o=>`
+
+  const readyCards=rd.length?rd.map(o=>`
     <div class="rc">
       <div class="rc-hd"><span class="rc-id">#${o.id}</span><span class="rc-elapsed">${mins(o)}m</span></div>
-      <div style="font-size:10px;color:var(--text2);font-family:var(--mono);margin-bottom:4px">${o.table} · ${o.type}</div>
-      <div class="rc-items-list">${o.items.map(i=>`<div class="rc-item"><span class="rc-item-q">${i.q}×</span><span class="rc-item-n">${i.n}</span></div>`).join('')}</div>
-      <button class="rc-btn" onclick="markServed('${o.id}')">Mark Served</button>
-    </div>`).join(''):'<div style="color:var(--text3);font-size:12px;font-family:var(--mono);padding:28px;text-align:center">No orders ready yet</div>';
+      <div style="font-size:10px;color:var(--text2);font-family:var(--mono);margin-bottom:6px">${o.table} · ${o.type}</div>
+      <div class="rc-items-list">${o.items.map((i,idx)=>`
+        <div class="rc-item" style="cursor:pointer;transition:background .12s" onclick="recallItem('${o.id}',${idx})" title="Tap to recall this item">
+          <span class="rc-item-q">${i.q}×</span>
+          <span class="rc-item-n">${i.n}</span>
+          <span style="font-size:9px;color:var(--amber);font-family:var(--mono);margin-left:auto;opacity:0.6">↩ recall</span>
+        </div>`).join('')}
+      </div>
+      <div style="font-size:10px;color:var(--text3);font-family:var(--mono);text-align:center;margin-top:2px">Tap item to recall individually</div>
+      <hr class="rc-divider">
+      <div class="cta-area" style="display:flex;gap:6px">
+        <button class="rc-recall-btn" style="flex:1" onclick="recallOrder('${o.id}')">↩ Recall Order</button>
+        <button class="rc-btn" style="flex:2" onclick="markServed('${o.id}')">Mark Served</button>
+      </div>
+    </div>`).join('')
+    :'<div style="color:var(--text3);font-size:12px;font-family:var(--mono);padding:24px;text-align:center;grid-column:1/-1">No orders ready yet</div>';
+
+  const servedCards=done.length?`
+    <div style="grid-column:1/-1;display:flex;align-items:center;gap:10px;padding:4px 0 2px">
+      <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--text3);font-family:var(--mono)">Recently Served</span>
+      <div style="flex:1;height:1px;background:var(--border)"></div>
+    </div>
+    ${done.map(o=>`
+    <div class="rc served">
+      <div class="rc-hd">
+        <span class="rc-id" style="color:var(--text2)">#${o.id}</span>
+        <span class="rc-served-badge">✓ Served</span>
+      </div>
+      <div style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-bottom:6px">${o.table} · ${o.type}</div>
+      <div class="rc-items-list">${o.items.map(i=>`
+        <div class="rc-item" style="opacity:.7">
+          <span class="rc-item-q">${i.q}×</span>
+          <span class="rc-item-n">${i.n}</span>
+        </div>`).join('')}
+      </div>
+      <hr class="rc-divider">
+      <button class="rc-recall-btn" onclick="recallServed('${o.id}')">↩ Recall to Ready</button>
+    </div>`).join('')}`
+    :'';
+
+  document.getElementById('readyGrid').innerHTML=readyCards+servedCards;
 }
 
 function renderStock(){
@@ -817,7 +984,7 @@ function toggleStock(id){
 }
 function allAvail(){MENU.forEach(m=>m.avail=true);notify('All items available','green');renderStock();}
 function serveAll(){
-  orders.filter(o=>o.status==='ready').forEach(o=>{prepLog.push(mins(o));served++;o.status='done';});
+  orders.filter(o=>o.status==='ready').forEach(o=>{prepLog.push(mins(o));served++;o.status='done';o.servedAt=Date.now();});
   notify('All ready orders served','green');render();
 }
 
