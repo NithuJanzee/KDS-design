@@ -311,9 +311,97 @@ button{font-family:var(--font);cursor:pointer}
 
 /* ── Notif ── */
 .notif-stack{position:fixed;bottom:74px;right:13px;display:flex;flex-direction:column;gap:5px;z-index:999;pointer-events:none;align-items:flex-end}
-.notif{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);padding:10px 14px;font-size:12px;box-shadow:var(--shadow-md);animation:fadeUp .25s ease;display:flex;align-items:center;gap:8px;max-width:250px}
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.notif{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);padding:10px 14px;font-size:12px;box-shadow:var(--shadow-md);animation:notifIn .35s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;gap:8px;max-width:250px}
+@keyframes notifIn{from{opacity:0;transform:translateX(60px) scale(.85)}to{opacity:1;transform:translateX(0) scale(1)}}
 .nd{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* ═══════════════════════════════════════
+   HEAVY ANIMATIONS — KDS Action System
+═══════════════════════════════════════ */
+
+/* ── Keyframes ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes cardEnter{0%{opacity:0;transform:translateY(-24px) scale(.94)}60%{transform:translateY(4px) scale(1.01)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes cardExit{0%{opacity:1;transform:translateX(0) scale(1)}30%{transform:translateX(8px) scale(1.02)}100%{opacity:0;transform:translateX(60px) scale(.9)}}
+@keyframes cardRecall{0%{opacity:1;transform:translateX(0) scale(1)}30%{transform:translateX(-8px) scale(1.02)}100%{opacity:0;transform:translateX(-60px) scale(.9)}}
+@keyframes cardAccepted{0%{transform:scale(1)}20%{transform:scale(1.03)}40%{transform:scale(.98)}60%{transform:scale(1.01)}100%{transform:scale(1)}}
+@keyframes cardReady{0%{transform:scale(1);box-shadow:none}25%{transform:scale(1.04);box-shadow:0 0 0 4px rgba(22,163,74,.25)}50%{transform:scale(.98)}75%{transform:scale(1.01);box-shadow:0 0 0 8px rgba(22,163,74,.08)}100%{transform:scale(1);box-shadow:none}}
+@keyframes cardServed{0%{opacity:1;transform:translateY(0) scale(1)}20%{transform:translateY(-6px) scale(1.02)}100%{opacity:0;transform:translateY(-40px) scale(.9)}}
+@keyframes cardRecallFull{0%{transform:scale(1)}15%{transform:scale(1.04) rotate(-1deg)}40%{transform:scale(.97) rotate(.5deg)}70%{transform:scale(1.01)}100%{transform:scale(1)}}
+@keyframes itemCheck{0%{transform:scale(1)}30%{transform:scale(1.18)}60%{transform:scale(.92)}100%{transform:scale(1)}}
+@keyframes itemRecall{0%{background:var(--amber-bg);transform:translateX(0)}40%{transform:translateX(-6px)}100%{background:transparent;transform:translateX(0)}}
+@keyframes itemStrike{0%{opacity:1}100%{opacity:1}}
+@keyframes strikeGrow{from{width:0}to{width:100%}}
+@keyframes progressPulse{0%,100%{opacity:1}50%{opacity:.6}}
+@keyframes laneFlash{0%{background:transparent}30%{background:rgba(37,99,235,.07)}100%{background:transparent}}
+@keyframes laneReadyFlash{0%{background:transparent}30%{background:rgba(22,163,74,.09)}100%{background:transparent}}
+@keyframes laneAmberFlash{0%{background:transparent}30%{background:rgba(217,119,6,.08)}100%{background:transparent}}
+@keyframes ripple{0%{transform:scale(0);opacity:.6}100%{transform:scale(4);opacity:0}}
+@keyframes btnPop{0%{transform:scale(1)}40%{transform:scale(.93)}70%{transform:scale(1.06)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+@keyframes slideInLeft{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideInRight{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes bounceIn{0%{opacity:0;transform:scale(.3)}50%{opacity:1;transform:scale(1.08)}70%{transform:scale(.95)}100%{transform:scale(1)}}
+@keyframes glow-green{0%,100%{box-shadow:0 0 0 0 rgba(22,163,74,0)}50%{box-shadow:0 0 0 6px rgba(22,163,74,.18)}}
+@keyframes glow-amber{0%,100%{box-shadow:0 0 0 0 rgba(217,119,6,0)}50%{box-shadow:0 0 0 6px rgba(217,119,6,.18)}}
+@keyframes glow-blue{0%,100%{box-shadow:0 0 0 0 rgba(37,99,235,0)}50%{box-shadow:0 0 0 6px rgba(37,99,235,.18)}}
+@keyframes countBump{0%{transform:scale(1)}40%{transform:scale(1.5)}70%{transform:scale(.9)}100%{transform:scale(1)}}
+@keyframes topbarPillPop{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
+@keyframes navBadgePop{0%{transform:scale(1)}50%{transform:scale(1.4)}100%{transform:scale(1)}}
+@keyframes summaryItemFlash{0%{background:var(--blue-bg);border-color:var(--blue-bdr)}60%{background:var(--green-bg);border-color:var(--green-bdr)}100%{}}
+@keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-50px) scale(.7)}}
+@keyframes splashRing{0%{transform:scale(.5);opacity:.8}100%{transform:scale(2.5);opacity:0}}
+
+/* ── Applied animation classes ── */
+.anim-card-enter{animation:cardEnter .45s cubic-bezier(.34,1.4,.64,1) both}
+.anim-card-exit{animation:cardExit .35s ease-in forwards;pointer-events:none}
+.anim-card-recall{animation:cardRecall .35s ease-in forwards;pointer-events:none}
+.anim-card-accepted{animation:cardAccepted .5s cubic-bezier(.36,.07,.19,.97) both}
+.anim-card-ready{animation:cardReady .6s cubic-bezier(.36,.07,.19,.97) both}
+.anim-card-served{animation:cardServed .4s ease-in forwards;pointer-events:none}
+.anim-card-recall-full{animation:cardRecallFull .55s cubic-bezier(.36,.07,.19,.97) both}
+.anim-shake{animation:shake .4s cubic-bezier(.36,.07,.19,.97) both}
+.anim-bounce-in{animation:bounceIn .5s cubic-bezier(.36,.07,.19,.97) both}
+.anim-slide-left{animation:slideInLeft .35s cubic-bezier(.34,1.4,.64,1) both}
+.anim-slide-right{animation:slideInRight .35s cubic-bezier(.34,1.4,.64,1) both}
+.anim-glow-green{animation:glow-green .8s ease-in-out 3}
+.anim-glow-amber{animation:glow-amber .8s ease-in-out 3}
+.anim-glow-blue{animation:glow-blue .8s ease-in-out 3}
+
+/* Lane flash overlays */
+.lane-flash-blue{animation:laneFlash .6s ease both}
+.lane-flash-green{animation:laneReadyFlash .6s ease both}
+.lane-flash-amber{animation:laneAmberFlash .6s ease both}
+
+/* Ripple on buttons */
+.btn-ripple-wrap{position:relative;overflow:hidden}
+.btn-ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.4);pointer-events:none;animation:ripple .5s ease-out forwards}
+
+/* Item row animations */
+.item-row.anim-check{animation:itemCheck .35s cubic-bezier(.34,1.56,.64,1)}
+.item-row.anim-uncheck{animation:itemRecall .4s ease both}
+
+/* Float-up score/label for actions */
+.float-label{position:fixed;font-size:13px;font-weight:700;font-family:var(--mono);pointer-events:none;z-index:9999;animation:floatUp .7s ease-out forwards;white-space:nowrap}
+
+/* Splash ring for major events */
+.splash-ring{position:fixed;border-radius:50%;pointer-events:none;z-index:9998;animation:splashRing .6s ease-out forwards}
+
+/* Progress bar animate */
+.progress-fill{transition:width .5s cubic-bezier(.4,0,.2,1),background .4s ease}
+
+/* Count badge pop */
+.lane-cnt.pop{animation:countBump .4s cubic-bezier(.34,1.56,.64,1)}
+.pill.pop{animation:topbarPillPop .4s cubic-bezier(.34,1.56,.64,1)}
+.nav-badge.pop{animation:navBadgePop .5s cubic-bezier(.34,1.56,.64,1)}
+
+/* Summary card flash on click */
+.s-card.anim-flash{animation:summaryItemFlash .6s ease both}
+
+/* Tab view transitions */
+.view{transition:opacity .2s ease}
+.view.tab-out{opacity:0;pointer-events:none}
+.view.tab-in{animation:fadeUp .3s cubic-bezier(.34,1.2,.64,1) both}
 </style>
 </head>
 <body>
@@ -335,7 +423,7 @@ button{font-family:var(--font);cursor:pointer}
     <span class="live-chip"><span class="live-dot"></span>LIVE</span>
     <span class="avg-chip">Avg&nbsp;<b id="avgTime">—</b></span>
     <button class="icon-btn" id="themeBtn" onclick="toggleTheme()">☀️</button>
-    <button class="btn btn-accent" onclick="addDemo()">+ Order</button>
+    <button class="btn btn-accent" onclick="addDemo(event)">+ Order</button>
   </div>
 </div>
 
@@ -388,7 +476,7 @@ button{font-family:var(--font);cursor:pointer}
   <div class="view" id="view-ready">
     <div class="ready-banner">
       <span id="readyTxt">0 orders ready</span>
-      <button class="btn" onclick="serveAll()">Serve All</button>
+      <button class="btn" onclick="serveAll(event)">Serve All</button>
     </div>
     <div class="scroll-area"><div class="ready-grid" id="readyGrid"></div></div>
   </div>
@@ -514,85 +602,155 @@ function typeTag(t){
   return`<span class="type-tag tt-del">Delivery</span>`;
 }
 
+/* ── Animation helpers ── */
+function floatLabel(x,y,text,color){
+  const el=document.createElement('div');
+  el.className='float-label';
+  el.style.cssText=`left:${x}px;top:${y}px;color:${color}`;
+  el.textContent=text;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),750);
+}
+function splashAt(x,y,color){
+  const el=document.createElement('div');
+  el.className='splash-ring';
+  el.style.cssText=`left:${x-40}px;top:${y-40}px;width:80px;height:80px;border:3px solid ${color}`;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),650);
+}
+function addRipple(btn,e){
+  if(!btn||!e)return;
+  const r=btn.getBoundingClientRect();
+  const d=Math.max(r.width,r.height)*2;
+  const rp=document.createElement('span');
+  rp.className='btn-ripple';
+  rp.style.cssText=`width:${d}px;height:${d}px;left:${e.clientX-r.left-d/2}px;top:${e.clientY-r.top-d/2}px`;
+  btn.appendChild(rp);
+  btn.classList.add('btn-ripple-wrap');
+  setTimeout(()=>rp.remove(),520);
+}
+function popCount(elId){
+  const el=document.getElementById(elId);
+  if(!el)return;
+  el.classList.remove('pop');
+  void el.offsetWidth;
+  el.classList.add('pop');
+  setTimeout(()=>el.classList.remove('pop'),450);
+}
+function flashLane(status,color){
+  const l=document.getElementById('lane-'+status);
+  if(!l)return;
+  const cls=`lane-flash-${color}`;
+  l.classList.remove(cls);void l.offsetWidth;l.classList.add(cls);
+  setTimeout(()=>l.classList.remove(cls),650);
+}
+
 /* ── Item click handler ── */
 function clickItem(oid,idx){
   const o=orders.find(x=>x.id===oid);
-  if(!o)return;
-  // In ready state items are still visible but clicking is disabled (no accident)
-  if(o.status==='ready'||o.status==='done')return;
-  // If new → auto-move to prep first
-  if(o.status==='new'){
-    o.status='prep';
-    notify(`#${o.id} moved to Preparing`,'blue');
-  }
-  // Toggle item done
+  if(!o||o.status==='ready'||o.status==='done')return;
+  const wasNew=o.status==='new';
+  if(wasNew){o.status='prep';}
   o.items[idx].done=!o.items[idx].done;
-  // Check if all items done → move to ready
-  if(o.items.every(i=>i.done)){
-    o.status='ready';
-    notify(`#${o.id} — all items ready!`,'green');
+  const cardEl=document.getElementById('card-'+oid);
+  if(cardEl){
+    const rows=cardEl.querySelectorAll('.item-row');
+    if(rows[idx]){
+      const cl=o.items[idx].done?'anim-check':'anim-uncheck';
+      rows[idx].classList.remove(cl);void rows[idx].offsetWidth;rows[idx].classList.add(cl);
+      setTimeout(()=>rows[idx]&&rows[idx].classList.remove(cl),400);
+    }
+    if(wasNew){cardEl.classList.add('anim-card-accepted');flashLane('prep','blue');}
   }
-  render();
+  if(o.items.every(i=>i.done)){
+    setTimeout(()=>{
+      const el=document.getElementById('card-'+oid);
+      if(el){el.classList.add('anim-card-ready');}
+      flashLane('ready','green');
+      setTimeout(()=>{o.status='ready';render();notify(`#${o.id} — all items ready!`,'green');popCount('cntReady');popCount('pillReady');popCount('readyBadge');},300);
+    },200);
+    return;
+  }
+  setTimeout(()=>render(),wasNew?350:180);
 }
 
 /* ── Accept / CTA ── */
-function acceptOrder(oid){
+function acceptOrder(oid,e){
   const o=orders.find(x=>x.id===oid);
   if(!o||o.status!=='new')return;
+  if(e){addRipple(e.currentTarget,e);floatLabel(e.clientX-30,e.clientY-22,'→ Preparing','var(--blue)');}
+  const cardEl=document.getElementById('card-'+oid);
+  if(cardEl){cardEl.classList.add('anim-card-accepted');flashLane('prep','blue');}
   o.status='prep';
   notify(`#${o.id} accepted — preparing`,'blue');
-  render();
+  popCount('cntPrep');popCount('pillPrep');
+  setTimeout(()=>render(),360);
 }
-function markReady(oid){
+
+function markReady(oid,e){
   const o=orders.find(x=>x.id===oid);
   if(!o||o.status!=='prep')return;
-  o.items.forEach(i=>i.done=true);
-  o.status='ready';
-  notify(`#${o.id} ready for service!`,'green');
-  render();
-}
-function markServed(oid){
-  const o=orders.find(x=>x.id===oid);
-  if(!o||o.status!=='ready')return;
-  prepLog.push(mins(o));served++;
-  o.status='done';
-  o.servedAt=Date.now();
-  notify(`#${o.id} served`,'amber');
-  render();
+  if(e){addRipple(e.currentTarget,e);splashAt(e.clientX,e.clientY,'var(--green)');floatLabel(e.clientX-20,e.clientY-24,'✓ Ready!','var(--green)');}
+  const cardEl=document.getElementById('card-'+oid);
+  if(cardEl){cardEl.classList.add('anim-card-ready');flashLane('ready','green');}
+  setTimeout(()=>{
+    o.items.forEach(i=>i.done=true);o.status='ready';
+    notify(`#${o.id} ready for service!`,'green');
+    popCount('cntReady');popCount('pillReady');popCount('readyBadge');
+    render();
+  },320);
 }
 
-/* ── Recall single item from Ready → back to Preparing (unmark that item) ── */
-function recallItem(oid,idx){
+function markServed(oid,e){
   const o=orders.find(x=>x.id===oid);
   if(!o||o.status!=='ready')return;
-  o.items[idx].done=false;
-  o.status='prep';
-  notify(`#${o.id} recalled — ${o.items[idx].n} not ready`,'amber');
-  render();
+  if(e){addRipple(e.currentTarget,e);splashAt(e.clientX,e.clientY,'var(--amber)');floatLabel(e.clientX-20,e.clientY-24,'Served ✓','var(--green)');}
+  const cardEl=document.getElementById('card-'+oid);
+  if(cardEl){cardEl.classList.add('anim-card-served');}
+  setTimeout(()=>{
+    prepLog.push(mins(o));served++;o.status='done';o.servedAt=Date.now();
+    notify(`#${o.id} served`,'amber');render();
+  },380);
 }
 
-/* ── Recall entire order from Ready → Preparing, unmark all items ── */
-function recallOrder(oid){
+/* ── Recall single item from Ready → back to Preparing ── */
+function recallItem(oid,idx,e){
   const o=orders.find(x=>x.id===oid);
   if(!o||o.status!=='ready')return;
-  o.items.forEach(i=>i.done=false);
-  o.status='prep';
-  notify(`#${o.id} recalled to Preparing`,'amber');
-  render();
+  if(e){addRipple(e.currentTarget||e.target,e);floatLabel(e.clientX-34,e.clientY-22,'↩ Recalled','var(--amber)');}
+  const cardEl=document.getElementById('card-'+oid);
+  if(cardEl){cardEl.classList.add('anim-card-recall-full');flashLane('prep','amber');}
+  setTimeout(()=>{
+    o.items[idx].done=false;o.status='prep';
+    notify(`#${o.id} recalled — ${o.items[idx].n} not ready`,'amber');render();
+  },370);
+}
+
+/* ── Recall entire order from Ready → Preparing ── */
+function recallOrder(oid,e){
+  const o=orders.find(x=>x.id===oid);
+  if(!o||o.status!=='ready')return;
+  if(e){addRipple(e.currentTarget,e);splashAt(e.clientX,e.clientY,'var(--amber)');floatLabel(e.clientX-42,e.clientY-24,'↩ Back to Prep','var(--amber)');}
+  const cardEl=document.getElementById('card-'+oid);
+  if(cardEl){cardEl.classList.add('anim-card-recall');flashLane('prep','amber');}
+  setTimeout(()=>{
+    o.items.forEach(i=>i.done=false);o.status='prep';
+    notify(`#${o.id} recalled to Preparing`,'amber');render();
+  },340);
 }
 
 /* ── Recall a served (done) order back to Ready ── */
-function recallServed(oid){
+function recallServed(oid,e){
   const o=orders.find(x=>x.id===oid);
   if(!o||o.status!=='done')return;
-  // Remove last served log entry for this order if present
-  if(prepLog.length>0)prepLog.pop();
-  served=Math.max(0,served-1);
-  o.items.forEach(i=>i.done=true);
-  o.status='ready';
-  delete o.servedAt;
-  notify(`#${o.id} recalled from served — back to Ready`,'red');
-  render();
+  if(e){addRipple(e.currentTarget,e);splashAt(e.clientX,e.clientY,'var(--red)');floatLabel(e.clientX-42,e.clientY-24,'↩ Recall!','var(--red)');}
+  setTimeout(()=>{
+    if(prepLog.length>0)prepLog.pop();
+    served=Math.max(0,served-1);
+    o.items.forEach(i=>i.done=true);o.status='ready';delete o.servedAt;
+    notify(`#${o.id} recalled from served`,'red');
+    popCount('cntReady');popCount('pillReady');popCount('readyBadge');render();
+  },200);
 }
 
 /* ── Move up/down within lane ── */
@@ -636,7 +794,7 @@ function cardHtml(o){
   const itemsHtml=o.items.map((it,idx)=>{
     if(isReady){
       // In ready: items are struck through but clickable to recall individual item
-      return`<div class="item-row done recallable" onclick="recallItem('${o.id}',${idx})" title="Tap to recall this item back to preparing">
+      return`<div class="item-row done recallable" onclick="recallItem('${o.id}',${idx},event)" title="Tap to recall this item back to preparing">
         <span class="item-q">${it.q}×</span>
         <span class="item-n">${it.n}</span>
         <span class="item-check"></span>
@@ -662,16 +820,16 @@ function cardHtml(o){
   let ctaHtml='';
   if(isNew){
     ctaHtml=`<div class="cta-area">
-      <button class="cta-btn cta-accept" onclick="acceptOrder('${o.id}')">Accept Order</button>
+      <button class="cta-btn cta-accept" onclick="acceptOrder('${o.id}',event)">Accept Order</button>
     </div>`;
   } else if(isPrep){
     ctaHtml=`<div class="cta-area">
-      <button class="cta-btn cta-ready" onclick="markReady('${o.id}')">Mark All Ready</button>
+      <button class="cta-btn cta-ready" onclick="markReady('${o.id}',event)">Mark All Ready</button>
     </div>`;
   } else if(isReady){
     ctaHtml=`<div class="cta-area">
-      <button class="cta-btn cta-recall" onclick="recallOrder('${o.id}')">Recall Order</button>
-      <button class="cta-btn cta-served" onclick="markServed('${o.id}')">Mark Served</button>
+      <button class="cta-btn cta-recall" onclick="recallOrder('${o.id}',event)">Recall Order</button>
+      <button class="cta-btn cta-served" onclick="markServed('${o.id}',event)">Mark Served</button>
     </div>`;
   }
 
@@ -681,7 +839,7 @@ function cardHtml(o){
     <button class="sort-arrow" onclick="moveInLane('${o.id}',1)" title="Move down">↓</button>
   </div>`;
 
-  return`<div class="ocard ${urgCls(m)}" id="card-${o.id}" draggable="true"
+  return`<div class="ocard anim-card-enter ${urgCls(m)}" id="card-${o.id}" draggable="true"
     ondragstart="onDragStart(event,'${o.id}')" ondragend="onDragEnd(event,'${o.id}')">
     <div class="drag-handle" title="Drag to another lane">
       <svg viewBox="0 0 14 14"><circle cx="5" cy="3.5" r="1" fill="currentColor" stroke="none"/><circle cx="9" cy="3.5" r="1" fill="currentColor" stroke="none"/><circle cx="5" cy="7" r="1" fill="currentColor" stroke="none"/><circle cx="9" cy="7" r="1" fill="currentColor" stroke="none"/><circle cx="5" cy="10.5" r="1" fill="currentColor" stroke="none"/><circle cx="9" cy="10.5" r="1" fill="currentColor" stroke="none"/></svg>
@@ -739,11 +897,11 @@ function onDrop(e,status){
   if(!dragId)return;
   const o=orders.find(x=>x.id===dragId);
   if(!o||o.status===status)return;
-  const prev=o.status;
   o.status=status;
-  // handle item states on drop
   if(status==='ready')o.items.forEach(i=>i.done=true);
   if(status==='new')o.items.forEach(i=>i.done=false);
+  const colorMap={new:'amber',prep:'blue',ready:'green'};
+  flashLane(status,colorMap[status]||'blue');
   notify(`#${o.id} moved → ${status.charAt(0).toUpperCase()+status.slice(1)}`,'blue');
   render();
 }
@@ -761,26 +919,27 @@ function sumData(){
 }
 
 /* ── Click a summary item — mark ALL bills containing it as preparing, strike item ── */
-function clickSummaryItem(itemName){
+function clickSummaryItem(itemName,e){
   let affected=0;
   orders.forEach(o=>{
     if(o.status==='done'||o.status==='ready')return;
     const it=o.items.find(i=>i.n===itemName);
     if(!it)return;
-    it.done=true;
-    affected++;
-    // If was new → move to prep
-    if(o.status==='new'){
-      o.status='prep';
-    }
-    // If all items now done → move to ready
-    if(o.items.every(i=>i.done)){
-      o.status='ready';
-    }
+    it.done=true;affected++;
+    if(o.status==='new'){o.status='prep';}
+    if(o.items.every(i=>i.done)){o.status='ready';}
   });
   if(affected>0){
+    if(e){
+      const card=e.currentTarget;
+      card.classList.add('anim-flash');
+      splashAt(e.clientX,e.clientY,'var(--blue)');
+      floatLabel(e.clientX-50,e.clientY-26,`${itemName} → ${affected} order${affected>1?'s':''}!`,'var(--blue)');
+      setTimeout(()=>card.classList.remove('anim-flash'),650);
+    }
+    flashLane('prep','blue');
     notify(`${itemName} marked done across ${affected} order${affected>1?'s':''}`, 'blue');
-    render();
+    setTimeout(()=>render(),180);
   }
 }
 
@@ -829,7 +988,7 @@ function render(){
     const progColor=allDone?'var(--green)':pct>50?'var(--blue)':'var(--amber)';
     const billCount=[...new Set(d.bills)].length;
     const cat=getCat(n);
-    return`<div class="s-card ${allDone?'all-done':''}" onclick="clickSummaryItem('${n.replace(/'/g,"\\'")}')">
+    return`<div class="s-card ${allDone?'all-done':''}" onclick="clickSummaryItem('${n.replace(/'/g,"\\'")}',event)">
       <div class="s-top-row">
         <div class="s-name-wrap">
           <div class="s-name">${n}</div>
@@ -919,7 +1078,7 @@ function renderReadyQ(){
       <div class="rc-hd"><span class="rc-id">#${o.id}</span><span class="rc-elapsed">${mins(o)}m</span></div>
       <div style="font-size:10px;color:var(--text2);font-family:var(--mono);margin-bottom:6px">${o.table} · ${o.type}</div>
       <div class="rc-items-list">${o.items.map((i,idx)=>`
-        <div class="rc-item" style="cursor:pointer;transition:background .12s" onclick="recallItem('${o.id}',${idx})" title="Tap to recall this item">
+        <div class="rc-item" style="cursor:pointer;transition:background .12s" onclick="recallItem('${o.id}',${idx},event)" title="Tap to recall this item">
           <span class="rc-item-q">${i.q}×</span>
           <span class="rc-item-n">${i.n}</span>
           <span style="font-size:9px;color:var(--amber);font-family:var(--mono);margin-left:auto;opacity:0.6">↩ recall</span>
@@ -928,8 +1087,8 @@ function renderReadyQ(){
       <div style="font-size:10px;color:var(--text3);font-family:var(--mono);text-align:center;margin-top:2px">Tap item to recall individually</div>
       <hr class="rc-divider">
       <div class="cta-area" style="display:flex;gap:6px">
-        <button class="rc-recall-btn" style="flex:1" onclick="recallOrder('${o.id}')">↩ Recall Order</button>
-        <button class="rc-btn" style="flex:2" onclick="markServed('${o.id}')">Mark Served</button>
+        <button class="rc-recall-btn" style="flex:1" onclick="recallOrder('${o.id}',event)">↩ Recall Order</button>
+        <button class="rc-btn" style="flex:2" onclick="markServed('${o.id}',event)">Mark Served</button>
       </div>
     </div>`).join('')
     :'<div style="color:var(--text3);font-size:12px;font-family:var(--mono);padding:24px;text-align:center;grid-column:1/-1">No orders ready yet</div>';
@@ -953,7 +1112,7 @@ function renderReadyQ(){
         </div>`).join('')}
       </div>
       <hr class="rc-divider">
-      <button class="rc-recall-btn" onclick="recallServed('${o.id}')">↩ Recall to Ready</button>
+      <button class="rc-recall-btn" onclick="recallServed('${o.id}',event)">↩ Recall to Ready</button>
     </div>`).join('')}`
     :'';
 
@@ -983,16 +1142,16 @@ function toggleStock(id){
   renderStock();
 }
 function allAvail(){MENU.forEach(m=>m.avail=true);notify('All items available','green');renderStock();}
-function serveAll(){
-  orders.filter(o=>o.status==='ready').forEach(o=>{prepLog.push(mins(o));served++;o.status='done';o.servedAt=Date.now();});
-  notify('All ready orders served','green');render();
-}
 
 function switchTab(name,el){
   document.querySelectorAll('.nav-btn').forEach(n=>n.classList.remove('active'));
+  const prev=document.querySelector('.view.active');
+  if(prev){prev.classList.add('tab-out');setTimeout(()=>prev.classList.remove('tab-out'),220);}
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   el.classList.add('active');
-  document.getElementById('view-'+name).classList.add('active');
+  const next=document.getElementById('view-'+name);
+  next.classList.add('active','tab-in');
+  setTimeout(()=>next.classList.remove('tab-in'),350);
   if(name==='stock')renderStock();
   if(name==='bulk')renderBulk();
   if(name==='ready')renderReadyQ();
@@ -1008,13 +1167,29 @@ function toggleTheme(){
 const TABLES=['T2','T4','T6','T7','T10','T11','T13','BAR','TKY'];
 const TYPES=['Dine In','Dine In','Dine In','Takeaway','Delivery'];
 const POOL=['Fried Rice','Butter Naan','Carbonara','Margherita Pizza','Classic Burger','Fries','Chicken Wings','Stir-Fry Noodles','Virgin Mojito','Coke','Garlic Naan','Steamed Rice'];
+function serveAll(e){
+  const rd=orders.filter(o=>o.status==='ready');
+  if(!rd.length)return;
+  if(e){addRipple(e.currentTarget,e);splashAt(e.clientX,e.clientY,'var(--green)');}
+  rd.forEach(o=>{
+    const el=document.getElementById('card-'+o.id);
+    if(el)el.classList.add('anim-card-served');
+  });
+  setTimeout(()=>{
+    rd.forEach(o=>{prepLog.push(mins(o));served++;o.status='done';o.servedAt=Date.now();});
+    notify('All ready orders served','green');render();
+  },400);
+}
 
-function addDemo(){
+function addDemo(e){
   idN++;
   const n=Math.floor(Math.random()*3)+1;
   const items=[...POOL].sort(()=>Math.random()-.5).slice(0,n).map(nm=>({n:nm,q:Math.floor(Math.random()*3)+1,done:false}));
   const o={id:'T'+idN,table:TABLES[Math.floor(Math.random()*TABLES.length)],type:TYPES[Math.floor(Math.random()*TYPES.length)],status:'new',t0:Date.now(),items};
   orders.push(o);
+  if(e){addRipple(e.currentTarget,e);splashAt(e.clientX,e.clientY,'var(--amber)');floatLabel(e.clientX-40,e.clientY-26,`#T${idN} incoming!`,'var(--amber)');}
+  flashLane('new','amber');
+  popCount('cntNew');popCount('pillNew');
   notify(`New order #T${idN} — ${o.table} · ${o.type}`,'amber');
   render();
 }
@@ -1025,7 +1200,7 @@ function notify(msg,color){
   const n=document.createElement('div');n.className='notif';
   n.innerHTML=`<span class="nd" style="background:${cols[color]||'#aaa'}"></span><span>${msg}</span>`;
   stack.appendChild(n);
-  setTimeout(()=>{n.style.opacity='0';n.style.transition='opacity 0.4s';setTimeout(()=>n.remove(),400);},3000);
+  setTimeout(()=>{n.style.opacity='0';n.style.transform='translateX(30px)';n.style.transition='opacity 0.35s,transform 0.35s';setTimeout(()=>n.remove(),360);},3200);
 }
 
 setInterval(()=>render(),30000);
